@@ -12,23 +12,35 @@ Ed uses this workflow to build investment theses before making long equity or op
 
 ## Repository Structure
 
+Each analysis lives in its own subfolder named `{TICKER}-{YYYY-MM-DD}`. Root-level files are project-wide (skill, docs).
+
 ```
-├── CLAUDE.md                    ← You are here. AI agent instructions.
-├── README.md                    ← Human-readable project overview
-├── stock-analysis.skill         ← Installable Claude skill (zip). Contains SKILL.md + references/
+├── CLAUDE.md                          ← You are here. AI agent instructions.
+├── README.md                          ← Human-readable project overview
+├── stock-analysis.skill               ← Installable Claude skill (zip)
 │
-├── build_sg_model.py            ← Python script: builds SG (Sweetgreen) Excel model via openpyxl
-├── create_sg_memo.js            ← Node.js script: builds SG investment memo via docx library
+├── BROS-2026-06-05/
+│   ├── BROS_Investment_Memo.docx      ← Dutch Bros investment memo
+│   └── create_bros_memo.js           ← Node.js build script for memo
 │
-├── build_model.py               ← Python script: builds PLTR/NOW Excel model (shared template)
-├── create_now_memo.js           ← Node.js script: builds NOW (ServiceNow) investment memo
+├── SG-2026-06-05/
+│   ├── SG_Investment_Memo.docx        ← Sweetgreen investment memo
+│   ├── SG_Investment_Model.xlsx       ← Sweetgreen Excel model
+│   ├── build_sg_model.py              ← Python build script for model
+│   └── create_sg_memo.js             ← Node.js build script for memo
 │
-├── SG_Investment_Memo.docx      ← Latest SG investment memo (June 5, 2026)
-├── SG_Investment_Model.xlsx     ← Latest SG Excel model (June 5, 2026)
-├── PLTR_Investment_Memo.docx    ← Palantir investment memo
-├── NOW_Investment_Memo.docx     ← ServiceNow investment memo
-└── PLTR_NOW_Investment_Model.xlsx ← Shared PLTR/NOW Excel model
+├── NOW-2026-06-05/
+│   ├── NOW_Investment_Memo.docx       ← ServiceNow investment memo
+│   ├── PLTR_NOW_Investment_Model.xlsx ← Shared PLTR/NOW model (copy)
+│   └── create_now_memo.js            ← Node.js build script for memo
+│
+└── PLTR-2026-06-05/
+    ├── PLTR_Investment_Memo.docx      ← Palantir investment memo
+    ├── PLTR_NOW_Investment_Model.xlsx ← Shared PLTR/NOW Excel model (source)
+    └── build_model.py                 ← Python build script for model
 ```
+
+**Naming convention:** `{TICKER}-{YYYY-MM-DD}/` — one folder per analysis date. If the same ticker is re-analyzed later, a new dated folder is created alongside the old one.
 
 ---
 
@@ -109,17 +121,19 @@ Full tables in `stock-analysis.skill` → `references/dcf_defaults.md`.
 
 ### Excel Model (Python / openpyxl)
 ```bash
-cd "Stock Ticker Analysis"
+cd "Stock Ticker Analysis/SG-2026-06-05"
 python3 build_sg_model.py        # Generates SG_Investment_Model.xlsx
+
+cd "Stock Ticker Analysis/PLTR-2026-06-05"
 python3 build_model.py           # Generates PLTR_NOW_Investment_Model.xlsx
 ```
 Dependencies: `pip install openpyxl --break-system-packages`
 
 ### Investment Memo (Node.js / docx)
 ```bash
-node create_sg_memo.js           # Generates SG_Investment_Memo.docx
-node create_now_memo.js          # Generates NOW_Investment_Memo.docx
-node create_bros_memo.js         # Generates BROS_Investment_Memo.docx
+cd "Stock Ticker Analysis/SG-2026-06-05"   && node create_sg_memo.js
+cd "Stock Ticker Analysis/NOW-2026-06-05"  && node create_now_memo.js
+cd "Stock Ticker Analysis/BROS-2026-06-05" && node create_bros_memo.js
 ```
 Dependencies: `npm install -g docx` (install to `/tmp/npm-global`)
 
@@ -144,5 +158,6 @@ All completed analyses are mirrored to Google Drive for mobile access:
 
 1. Run the stock-analysis skill in Claude Cowork: `analyze $TICKER`
 2. The skill handles research (SEC EDGAR + web), model build, memo build, and Drive upload automatically.
-3. Add the new build scripts and output files to this repo and push.
-4. Update the Completed Analyses table in this CLAUDE.md.
+3. Save all output files into a new subfolder: `{TICKER}-{YYYY-MM-DD}/`
+4. Push the new folder to GitHub.
+5. Update the Completed Analyses table in this CLAUDE.md.

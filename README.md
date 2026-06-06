@@ -2,6 +2,20 @@
 
 Fundamental and technical investment analysis workflow for publicly traded stocks. Produces a professional investment memo and valuation Excel model for each ticker analyzed.
 
+## Folder Structure
+
+Each analysis is stored in its own subfolder: `{TICKER}-{YYYY-MM-DD}/`
+
+```
+├── BROS-2026-06-05/   ← Dutch Bros
+├── SG-2026-06-05/     ← Sweetgreen
+├── NOW-2026-06-05/    ← ServiceNow
+├── PLTR-2026-06-05/   ← Palantir
+└── stock-analysis.skill
+```
+
+Each folder contains the investment memo (.docx), Excel model (.xlsx where applicable), and the build scripts used to generate them.
+
 ## What This Produces
 
 For each stock, two deliverables are generated:
@@ -18,11 +32,12 @@ For each stock, two deliverables are generated:
 
 ## Analyses
 
-| Ticker | Company | Date | Rating |
-|---|---|---|---|
-| SG | Sweetgreen | June 2026 | AVOID at $7.42 — Accumulate via CSPs at $5–6 |
-| PLTR | Palantir | June 2026 | See memo |
-| NOW | ServiceNow | June 2026 | See memo |
+| Ticker | Company | Date | Rating | DCF Bull / Base / Bear |
+|---|---|---|---|---|
+| BROS | Dutch Bros | 2026-06-05 | HOLD / ACCUMULATE ON PULLBACK at ~$55 | $76 / $47 / $26 |
+| SG | Sweetgreen | 2026-06-05 | AVOID at $7.42 — Accumulate via CSPs at $5–6 | $14.77 / $3.49 / $1.36 |
+| PLTR | Palantir | 2026-06-05 | See memo | See PLTR-2026-06-05/ |
+| NOW | ServiceNow | 2026-06-05 | See memo | See NOW-2026-06-05/ |
 
 ## Running the Build Scripts
 
@@ -32,13 +47,15 @@ pip install openpyxl --break-system-packages
 npm install -g docx
 ```
 
-**Generate files:**
+**Generate files (run from inside each ticker folder):**
 ```bash
-python3 build_sg_model.py        # SG Excel model
-node create_sg_memo.js           # SG investment memo
-python3 build_model.py           # PLTR/NOW Excel model
-node create_now_memo.js          # NOW investment memo
+cd BROS-2026-06-05 && node create_bros_memo.js
+cd SG-2026-06-05   && node create_sg_memo.js && python3 build_sg_model.py
+cd NOW-2026-06-05  && node create_now_memo.js
+cd PLTR-2026-06-05 && python3 build_model.py
 ```
+
+> ⚠️ Build scripts must be run in a Cowork desktop session — not Claude mobile. See CLAUDE.md for details.
 
 ## Skill
 
