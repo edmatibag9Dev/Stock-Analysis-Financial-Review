@@ -101,6 +101,7 @@ Full tables in `stock-analysis.skill` → `references/dcf_defaults.md`.
 | SG | Sweetgreen | 2026-06-05 | AVOID at $7.42 / Accumulate via CSPs at $5–6 | $14.77 / $3.49 / $1.36 |
 | PLTR | Palantir | 2026-06-05 | See PLTR_Investment_Memo.docx | See PLTR_NOW_Investment_Model.xlsx |
 | NOW | ServiceNow | 2026-06-05 | See NOW_Investment_Memo.docx | See PLTR_NOW_Investment_Model.xlsx |
+| BROS | Dutch Bros | 2026-06-05 | HOLD / ACCUMULATE ON PULLBACK at ~$55 | $76 / $47 / $26 (EBITDA-terminal DCF, 12% WACC) |
 
 ---
 
@@ -118,8 +119,11 @@ Dependencies: `pip install openpyxl --break-system-packages`
 ```bash
 node create_sg_memo.js           # Generates SG_Investment_Memo.docx
 node create_now_memo.js          # Generates NOW_Investment_Memo.docx
+node create_bros_memo.js         # Generates BROS_Investment_Memo.docx
 ```
 Dependencies: `npm install -g docx` (install to `/tmp/npm-global`)
+
+**⚠️ Mobile workflow warning:** Analyses initiated on Claude mobile (iOS/Android) will NOT produce valid .docx output. Mobile Claude lacks access to the Node.js build scripts and falls back to raw XML string building, which produces corrupt ZIP archives (bad CRC, malformed XML). Always run the final build step — `node create_{ticker}_memo.js` — in a Cowork desktop session. The BROS memo was originally generated on mobile and had to be rebuilt on desktop (June 6, 2026).
 
 **Important:** Scripts have hardcoded session paths for the Finviz chart and output files. When running in a new environment, update these paths:
 - Chart source: `/sessions/{session-id}/mnt/outputs/{ticker}_chart.png`
