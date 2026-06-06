@@ -12,35 +12,49 @@ Ed uses this workflow to build investment theses before making long equity or op
 
 ## Repository Structure
 
-Each analysis lives in its own subfolder named `{TICKER}-{YYYY-MM-DD}`. Root-level files are project-wide (skill, docs).
+Two-level folder hierarchy: `{TICKER}/` at root contains dated analysis subfolders `{TICKER}-{YYYY-MM-DD}/` and an Archive folder. Root-level files are project-wide.
 
 ```
-├── CLAUDE.md                          ← You are here. AI agent instructions.
-├── README.md                          ← Human-readable project overview
-├── stock-analysis.skill               ← Installable Claude skill (zip)
+├── CLAUDE.md                              ← You are here. AI agent instructions.
+├── README.md                              ← Human-readable project overview
+├── stock-analysis.skill                   ← Installable Claude skill (zip)
+├── _Analysis_Patterns/                    ← Cross-ticker signal pattern library
+│   └── README.md
 │
-├── BROS-2026-06-05/
-│   ├── BROS_Investment_Memo.docx      ← Dutch Bros investment memo
-│   └── create_bros_memo.js           ← Node.js build script for memo
+├── BROS/
+│   ├── BROS-2026-06-05/                   ← Most recent analysis (top of folder)
+│   │   ├── BROS_Investment_Memo.docx
+│   │   └── create_bros_memo.js
+│   └── BROS_Archive/                      ← Analyses older than the last 3
 │
-├── SG-2026-06-05/
-│   ├── SG_Investment_Memo.docx        ← Sweetgreen investment memo
-│   ├── SG_Investment_Model.xlsx       ← Sweetgreen Excel model
-│   ├── build_sg_model.py              ← Python build script for model
-│   └── create_sg_memo.js             ← Node.js build script for memo
+├── SG/
+│   ├── SG-2026-06-05/
+│   │   ├── SG_Investment_Memo.docx
+│   │   ├── SG_Investment_Model.xlsx
+│   │   ├── build_sg_model.py
+│   │   └── create_sg_memo.js
+│   └── SG_Archive/
 │
-├── NOW-2026-06-05/
-│   ├── NOW_Investment_Memo.docx       ← ServiceNow investment memo
-│   ├── PLTR_NOW_Investment_Model.xlsx ← Shared PLTR/NOW model (copy)
-│   └── create_now_memo.js            ← Node.js build script for memo
+├── NOW/
+│   ├── NOW-2026-06-05/
+│   │   ├── NOW_Investment_Memo.docx
+│   │   ├── PLTR_NOW_Investment_Model.xlsx  ← Copy of shared model
+│   │   └── create_now_memo.js
+│   └── NOW_Archive/
 │
-└── PLTR-2026-06-05/
-    ├── PLTR_Investment_Memo.docx      ← Palantir investment memo
-    ├── PLTR_NOW_Investment_Model.xlsx ← Shared PLTR/NOW Excel model (source)
-    └── build_model.py                 ← Python build script for model
+└── PLTR/
+    ├── PLTR-2026-06-05/
+    │   ├── PLTR_Investment_Memo.docx
+    │   ├── PLTR_NOW_Investment_Model.xlsx  ← Source of shared model
+    │   └── build_model.py
+    └── PLTR_Archive/
 ```
 
-**Naming convention:** `{TICKER}-{YYYY-MM-DD}/` — one folder per analysis date. If the same ticker is re-analyzed later, a new dated folder is created alongside the old one.
+**Naming convention:**
+- Top-level folder: `{TICKER}/` — one per company, persists forever
+- Analysis subfolder: `{TICKER}-{YYYY-MM-DD}/` — one per analysis date
+- Quarterly updates create a new dated subfolder; prior analyses are never overwritten
+- Archive rule: keep the 3 most recent dated subfolders active; move older ones to `{TICKER}_Archive/`
 
 ---
 
@@ -50,7 +64,9 @@ The `.skill` file is a zip archive. Unzip to inspect:
 
 ```
 stock-analysis/
-├── SKILL.md                     ← Master workflow: 4 phases (Intake → Research → Analysis → Present)
+├── SKILL.md                     ← Master orchestrator: Phase 0 routing + Phases 1–4
+├── workflows/
+│   └── options_mode.md          ← Options-only workflow (triggered by Phase 0 vehicle = c)
 └── references/
     ├── dcf_defaults.md          ← Discount rates, terminal multiples, FCF margins by company type
     ├── memo_sections.md         ← Full 10-section memo template with formatting rules
@@ -59,7 +75,7 @@ stock-analysis/
 
 ### The 4-Phase Workflow
 
-**Phase 0 — Intake:** Confirm ticker, investment vehicle, primary concern, current position.
+**Phase 0 — Intake:** Confirm ticker, analysis type (new vs. quarterly update), trading vehicle (equity / overlay / options-only), primary concern, current position. Routes to Phase 0B for quarterly updates, or to `workflows/options_mode.md` for options-only trades.
 
 **Phase 1 — Research:** SEC EDGAR (10-Q + 8-K), price/technical data, Finviz chart, peer comps, Day One journal + Open Brain for prior thesis context.
 
@@ -89,6 +105,14 @@ These are hard constraints validated by prior analysis review:
 5. **Options yield labeling:** State as "per-cycle yield" not "annualized yield" (a 13–18% per-cycle yield on a 10-week CSP annualizes to ~80–94%).
 
 6. **Revenue base clarity:** If Year 1 revenue uses management guidance (not prior-year × growth %), label the growth table as "growth from [$X guidance base]" to prevent YoY confusion.
+
+7. **Options-only mode — IV Rank first:** When trading vehicle is options-only (no equity position), determine IV Rank before selecting strategy. IV Rank ≥ 50 → sell premium (spreads, condors). IV Rank < 50 → buy options. Do NOT buy long options into high-IV environments regardless of directional conviction.
+
+8. **Options-only mode — size to max loss:** Always compute max loss in dollar terms before stating a position size. Never size based on number of contracts without this calculation.
+
+9. **Options-only mode — time the thesis:** Match option expiry to the realistic timeframe of the thesis, not the cheapest available expiry. Use LEAPS (6–12 month) for multi-quarter theses.
+
+10. **Options-only mode — market implied vs. DCF check:** Always compare the options market's 1-SD implied move against the DCF bull/base/bear spread before recommending a trade. Full workflow in `stock-analysis.skill` → `workflows/options_mode.md`.
 
 ---
 
@@ -121,19 +145,19 @@ Full tables in `stock-analysis.skill` → `references/dcf_defaults.md`.
 
 ### Excel Model (Python / openpyxl)
 ```bash
-cd "Stock Ticker Analysis/SG-2026-06-05"
+cd "Stock Ticker Analysis/SG/SG-2026-06-05"
 python3 build_sg_model.py        # Generates SG_Investment_Model.xlsx
 
-cd "Stock Ticker Analysis/PLTR-2026-06-05"
+cd "Stock Ticker Analysis/PLTR/PLTR-2026-06-05"
 python3 build_model.py           # Generates PLTR_NOW_Investment_Model.xlsx
 ```
 Dependencies: `pip install openpyxl --break-system-packages`
 
 ### Investment Memo (Node.js / docx)
 ```bash
-cd "Stock Ticker Analysis/SG-2026-06-05"   && node create_sg_memo.js
-cd "Stock Ticker Analysis/NOW-2026-06-05"  && node create_now_memo.js
-cd "Stock Ticker Analysis/BROS-2026-06-05" && node create_bros_memo.js
+cd "Stock Ticker Analysis/SG/SG-2026-06-05"   && node create_sg_memo.js
+cd "Stock Ticker Analysis/NOW/NOW-2026-06-05"  && node create_now_memo.js
+cd "Stock Ticker Analysis/BROS/BROS-2026-06-05" && node create_bros_memo.js
 ```
 Dependencies: `npm install -g docx` (install to `/tmp/npm-global`)
 
