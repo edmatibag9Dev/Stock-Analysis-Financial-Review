@@ -1,0 +1,30 @@
+# Stock Analysis Financial Review
+
+> Fundamental + technical investment-analysis workflow for publicly traded stocks. Each ticker gets
+> a dated folder holding a 10-section investment memo (.docx), a 4-sheet valuation model (.xlsx
+> where applicable), and the build script that generated them — driven end to end by the packaged
+> stock-analysis skill.
+
+## Start here
+- [AGENTS.md](AGENTS.md): canonical agent guide — file map, per-analysis folder contract, verification gates.
+- [README.md](README.md): human overview — methodology, analyses index table, build-script prerequisites.
+- [CONTRIBUTING.md](CONTRIBUTING.md): commit + README standard.
+- [CLAUDE.md](CLAUDE.md): project instructions / workflow context for agents.
+
+## Engine
+- [stock-analysis.skill](stock-analysis.skill): packaged Cowork skill driving an analysis end to end — research, model build, memo build.
+- [_Analysis_Patterns/README.md](_Analysis_Patterns/README.md): reusable analysis patterns / methodology reference.
+
+## Analyses
+- [BROS/BROS-2026-06-05/create_bros_memo.js](BROS/BROS-2026-06-05/create_bros_memo.js): Dutch Bros memo generator (memo .docx beside it).
+- [SG/SG-2026-06-05/create_sg_memo.js](SG/SG-2026-06-05/create_sg_memo.js): Sweetgreen memo generator; model built by [SG/SG-2026-06-05/build_sg_model.py](SG/SG-2026-06-05/build_sg_model.py).
+- [NOW/NOW-2026-06-05/create_now_memo.js](NOW/NOW-2026-06-05/create_now_memo.js): ServiceNow memo generator (memo + model beside it).
+- [PLTR/PLTR-2026-06-05/build_model.py](PLTR/PLTR-2026-06-05/build_model.py): Palantir model generator (memo + model beside it).
+
+## Key rules
+- Never overwrite a dated analysis — a re-run gets a new {TICKER}-{YYYY-MM-DD}/ folder; superseded ones move to {TICKER}_Archive/.
+- Memo is always 10 sections; model is the 4-sheet layout (financials, projections, DCF, options).
+- DCF is 3-scenario (bull/base/bear) with a single WACC; EBITDA-terminal for pre-profitable names.
+- Keep the README analyses table in sync (ticker, company, date, rating, DCF bull/base/bear).
+- Public repo: never commit brokerage credentials, account numbers, position sizes, PII, or API keys; provider keys come from env vars only.
+- Commits follow CONTRIBUTING.md; README updated on every feat/data commit.
