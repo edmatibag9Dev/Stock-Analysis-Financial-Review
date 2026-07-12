@@ -4,13 +4,15 @@ Fundamental and technical investment analysis workflow for publicly traded stock
 
 ## Folder Structure
 
-Each analysis is stored in its own subfolder: `{TICKER}-{YYYY-MM-DD}/`
+Each ticker gets a top-level folder holding its dated analyses plus an archive: `{TICKER}/{TICKER}-{YYYY-MM-DD}/`
 
 ```
-├── BROS-2026-06-05/   ← Dutch Bros
-├── SG-2026-06-05/     ← Sweetgreen
-├── NOW-2026-06-05/    ← ServiceNow
-├── PLTR-2026-06-05/   ← Palantir
+├── BROS/BROS-2026-06-05/   ← Dutch Bros
+├── SG/SG-2026-06-05/       ← Sweetgreen
+├── NOW/NOW-2026-06-05/     ← ServiceNow
+├── PLTR/PLTR-2026-06-05/   ← Palantir
+├── FSLY/FSLY-2026-06-08/   ← Fastly
+├── TRMB/TRMB-2026-06-11/   ← Trimble
 └── stock-analysis.skill
 ```
 
@@ -38,6 +40,8 @@ For each stock, two deliverables are generated:
 | SG | Sweetgreen | 2026-06-05 | AVOID at $7.42 — Accumulate via CSPs at $5–6 | $14.77 / $3.49 / $1.36 |
 | PLTR | Palantir | 2026-06-05 | See memo | See PLTR-2026-06-05/ |
 | NOW | ServiceNow | 2026-06-05 | See memo | See NOW-2026-06-05/ |
+| FSLY | Fastly | 2026-06-08 | HOLD / ACCUMULATE ON WEAKNESS at ~$20 | $24.16 / $12.55 / $6.97 |
+| TRMB | Trimble | 2026-06-11 | BUY / ACCUMULATE ON WEAKNESS at ~$50 (staged entry; CSPs $45/$42.50) | $97 / $72 / $36 |
 
 ## Running the Build Scripts
 
@@ -49,10 +53,12 @@ npm install -g docx
 
 **Generate files (run from inside each ticker folder):**
 ```bash
-cd BROS-2026-06-05 && node create_bros_memo.js
-cd SG-2026-06-05   && node create_sg_memo.js && python3 build_sg_model.py
-cd NOW-2026-06-05  && node create_now_memo.js
-cd PLTR-2026-06-05 && python3 build_model.py
+cd BROS/BROS-2026-06-05 && node create_bros_memo.js
+cd SG/SG-2026-06-05     && node create_sg_memo.js && python3 build_sg_model.py
+cd NOW/NOW-2026-06-05   && node create_now_memo.js
+cd PLTR/PLTR-2026-06-05 && python3 build_model.py
+cd FSLY/FSLY-2026-06-08 && node create_fsly_memo.js && python3 build_fsly_model.py
+cd TRMB/TRMB-2026-06-11 && node create_trmb_memo.js && python3 build_trmb_model.py
 ```
 
 > ⚠️ Build scripts must be run in a Cowork desktop session — not Claude mobile. See CLAUDE.md for details.
@@ -62,3 +68,6 @@ cd PLTR-2026-06-05 && python3 build_model.py
 The `stock-analysis.skill` file is an installable Claude Cowork skill that automates the full workflow — research, model build, memo build, and Google Drive upload — for any publicly traded ticker.
 
 > For AI agent instructions and detailed methodology, see [CLAUDE.md](./CLAUDE.md).
+
+---
+*Last updated: 2026-07-12*

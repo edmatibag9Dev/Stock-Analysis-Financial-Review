@@ -4,6 +4,21 @@ All notable changes to Stock Analysis Financial Review are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/); dates are America/Los_Angeles.
 Gitignored data/output files are never committed.
 
+## [2026-07-12] — FSLY + TRMB analyses; docs synced to TICKER/ layout
+
+### Added
+- FSLY (Fastly) analysis, 2026-06-08 — memo, valuation model, chart, build scripts.
+  Verdict: HOLD / accumulate on weakness at ~$20; DCF $24.16 / $12.55 / $6.97.
+- TRMB (Trimble) analysis, 2026-06-11 — memo, valuation model, build scripts.
+  Verdict: BUY / accumulate on weakness at ~$50 (staged entry; CSPs $45/$42.50);
+  DCF $97 / $72 / $36 (FCF DCF, 9.5% WACC).
+- `FSLY_Archive/` and `TRMB_Archive/` placeholder directories.
+
+### Changed
+- README analyses table gains FSLY + TRMB; folder diagram and build-script paths
+  corrected to the `{TICKER}/` two-level layout; CLAUDE.md Completed Analyses synced.
+- `.gitignore` organized with section comments.
+
 ## [2026-07-12] — Repo standardization: llms.txt + CHANGELOG.md
 
 ### Added

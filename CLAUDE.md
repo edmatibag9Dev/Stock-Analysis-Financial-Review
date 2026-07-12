@@ -138,6 +138,8 @@ Full tables in `stock-analysis.skill` → `references/dcf_defaults.md`.
 | PLTR | Palantir | 2026-06-05 | See PLTR_Investment_Memo.docx | See PLTR_NOW_Investment_Model.xlsx |
 | NOW | ServiceNow | 2026-06-05 | See NOW_Investment_Memo.docx | See PLTR_NOW_Investment_Model.xlsx |
 | BROS | Dutch Bros | 2026-06-05 | HOLD / ACCUMULATE ON PULLBACK at ~$55 | $76 / $47 / $26 (EBITDA-terminal DCF, 12% WACC) |
+| FSLY | Fastly | 2026-06-08 | HOLD / ACCUMULATE ON WEAKNESS at ~$20 | $24.16 / $12.55 / $6.97 |
+| TRMB | Trimble | 2026-06-11 | BUY / ACCUMULATE ON WEAKNESS at ~$50 (staged entry; CSPs $45/$42.50) | $97 / $72 / $36 (FCF DCF, 9.5% WACC) |
 
 ---
 

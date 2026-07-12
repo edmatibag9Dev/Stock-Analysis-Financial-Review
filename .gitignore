@@ -1,8 +1,15 @@
+# Office lock files
 .~lock.*#
+
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
+
+# OS files
 .DS_Store
 Thumbs.db
+
+# Temp / local outputs
 outputs/
 *.log
