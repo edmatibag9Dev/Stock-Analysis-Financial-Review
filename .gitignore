@@ -13,3 +13,14 @@ Thumbs.db
 # Temp / local outputs
 outputs/
 *.log
+
+# --- Ticker analyses: Drive-first, repo = active working set only ---
+# Google Drive is the system of record (every analysis). The repo holds only
+# tickers Ed is actively engaged with (open position / active options / live
+# watchlist). Ignore all $-prefixed ticker folders by default so Drive-only
+# passes (e.g. $NUAI) can never be committed by accident.
+/$*/
+# To ADD an approved ticker to the repo, force-add it once — it stays tracked:
+#   git add -f "$TICKER/"
+# (Legacy non-$ folders BROS/PLTR/SG/FSLY/TRMB are already tracked and migrate
+#  to $TICKER on next touch.)

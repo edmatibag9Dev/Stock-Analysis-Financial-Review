@@ -50,11 +50,19 @@ Two-level folder hierarchy: `{TICKER}/` at root contains dated analysis subfolde
     └── PLTR_Archive/
 ```
 
-**Naming convention:**
-- Top-level folder: `{TICKER}/` — one per company, persists forever
-- Analysis subfolder: `{TICKER}-{YYYY-MM-DD}/` — one per analysis date
+**Naming convention — `$TICKER` everywhere (folders, subfolders, output files):**
+- Top-level folder: `$TICKER/` — one per company, persists forever (e.g. `$NOW/`)
+- Analysis subfolder: `$TICKER-{YYYY-MM-DD}/` — one per analysis date
+- Output files: `$TICKER_Investment_Memo_{YYYY-MM-DD}.docx`, `$TICKER_Investment_Model_{YYYY-MM-DD}.xlsx`, `$TICKER_chart.png`
+- Archive: `$TICKER_Archive/` — keep the 3 most recent dated subfolders active; move older ones here
 - Quarterly updates create a new dated subfolder; prior analyses are never overwritten
-- Archive rule: keep the 3 most recent dated subfolders active; move older ones to `{TICKER}_Archive/`
+- **Exception:** build scripts/code stay plain (no `$`) for shell-safety; scripts must quote output paths (`"$TICKER/…"`)
+- **Legacy migration (on next touch):** `BROS`, `PLTR`, `SG`, `FSLY`, `TRMB` are renamed to `$TICKER` (folder + subfolders + files) the next time each is analyzed. `$NUAI` and `$NOW` are already on-standard.
+
+**Repo inclusion policy — repo is the lean active working set; Google Drive is the full archive:**
+- **Google Drive = system of record.** EVERY analysis lands in Drive (folder `19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446`), including one-look passes and AVOIDs — so cross-ticker comparisons always have full context.
+- **Local repo = active tickers only.** A ticker is committed ONLY if Ed has an open equity position, an active options trade, or a live watchlist entry with a planned entry. Everything else is **Drive-only** (e.g. `$NUAI` = AVOID, no position). The test is active engagement, not the rating (`$SG` is AVOID-rated but stays in via active CSPs).
+- The skill asks at the end of each run — repo or Drive-only? — **defaulting to Drive-only**. Enforcement: `.gitignore` ignores all `/$*/` ticker folders; add an approved ticker with `git add -f "$TICKER/"`.
 
 ---
 
