@@ -18,15 +18,26 @@ the model, and the build script that generated them.**
 | Path | Committed? | Purpose |
 |---|---|---|
 | `AGENTS.md` | yes | This guide. |
+| `llms.txt` | yes | Machine-readable doc index pointing agents at AGENTS.md, the analysis folder contract, and the per-ticker build scripts. |
 | `README.md` | yes | Human overview, methodology, and the analyses index table. |
 | `CONTRIBUTING.md` | yes | Canonical commit + README standard. |
 | `CLAUDE.md` | yes | Project instructions / workflow context for agents. |
+| `.gitignore` | yes | Excludes Office lock files, Python cache, OS files, and local `outputs/` + logs. |
+| `CHANGELOG.md` | yes | Keep a Changelog history of the repo (newest first; dates America/Los_Angeles). |
 | `stock-analysis.skill` | yes | The packaged skill that drives an analysis end to end. |
 | `_Analysis_Patterns/README.md` | yes | Reusable analysis patterns / methodology reference. |
-| `{TICKER}-{YYYY-MM-DD}/*.docx` | yes | The investment memo (10-section). |
-| `{TICKER}-{YYYY-MM-DD}/*.xlsx` | yes | The valuation model (4-sheet: financials, projections, DCF, options). |
-| `{TICKER}-{YYYY-MM-DD}/build_*.py` / `create_*.js` | yes | The script that generated that ticker's deliverables. |
-| `{TICKER}/{TICKER}_Archive/.gitkeep` | yes | Placeholder keeping the per-ticker archive folder in git. |
+| `BROS/BROS-2026-06-05/` | yes | Dutch Bros analysis (2026-06-05): 10-section memo + memo generator (`create_bros_memo.js`). |
+| `FSLY/FSLY-2026-06-08/` | yes | Fastly analysis (2026-06-08): memo, valuation model, chart, `build_fsly_model.py` + `create_fsly_memo.js`. |
+| `NOW/NOW-2026-06-05/` | yes | ServiceNow analysis (2026-06-05): memo, shared `PLTR_NOW_Investment_Model.xlsx`, `create_now_memo.js`. |
+| `PLTR/PLTR-2026-06-05/` | yes | Palantir analysis (2026-06-05): memo, valuation model, `build_model.py`. |
+| `SG/SG-2026-06-05/` | yes | Sweetgreen analysis (2026-06-05): memo, valuation model, `build_sg_model.py` + `create_sg_memo.js`. |
+| `TRMB/TRMB-2026-06-11/` | yes | Trimble analysis (2026-06-11): memo, valuation model, `build_trmb_model.py` + `create_trmb_memo.js`. |
+| `BROS/BROS_Archive/.gitkeep` | yes | Placeholder keeping the Dutch Bros archive folder in git. |
+| `FSLY/FSLY_Archive/.gitkeep` | yes | Placeholder keeping the Fastly archive folder in git. |
+| `NOW/NOW_Archive/.gitkeep` | yes | Placeholder keeping the ServiceNow archive folder in git. |
+| `PLTR/PLTR_Archive/.gitkeep` | yes | Placeholder keeping the Palantir archive folder in git. |
+| `SG/SG_Archive/.gitkeep` | yes | Placeholder keeping the Sweetgreen archive folder in git. |
+| `TRMB/TRMB_Archive/.gitkeep` | yes | Placeholder keeping the Trimble archive folder in git. |
 
 ## The data contract (per-analysis folder convention)
 
