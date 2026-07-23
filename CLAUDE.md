@@ -1,6 +1,6 @@
 # Stock Ticker Analysis — AI Agent Context
 
-This repository contains a full-stack investment analysis workflow for publicly traded stocks. It produces two deliverables for each ticker: a professional investment memo (.docx) and a valuation Excel model (.xlsx), covering fundamental analysis, DCF valuation, Rule of 40 (SaaS), peer comparables, technical setup, and an options strategy overlay.
+This repository contains a full-stack investment analysis workflow for publicly traded stocks. It produces two deliverables for each ticker: a professional investment memo (.docx) and a valuation Excel model (.xlsx), covering fundamental analysis, DCF valuation, Rule of 40 (SaaS), peer comparables, management & governance scoring, technical setup, and an options strategy overlay.
 
 ---
 
@@ -69,7 +69,8 @@ stock-analysis/
 │   └── options_mode.md          ← Options-only workflow (triggered by Phase 0 vehicle = c)
 └── references/
     ├── dcf_defaults.md          ← Discount rates, terminal multiples, FCF margins by company type
-    ├── memo_sections.md         ← Full 10-section memo template with formatting rules
+    ├── memo_sections.md         ← Full 11-section memo template with formatting rules
+    ├── leadership_scorecard.md  ← Scored Management & Governance module (who + why it matters)
     └── non_saas_adapts.md       ← Adaptations for restaurants, semis, financials, biotech
 ```
 
@@ -77,14 +78,15 @@ stock-analysis/
 
 **Phase 0 — Intake:** Confirm ticker, analysis type (new vs. quarterly update), trading vehicle (equity / overlay / options-only), primary concern, current position. Routes to Phase 0B for quarterly updates, or to `workflows/options_mode.md` for options-only trades.
 
-**Phase 1 — Research:** SEC EDGAR (10-Q + 8-K), price/technical data, Finviz chart, peer comps, Day One journal + Open Brain for prior thesis context.
+**Phase 1 — Research:** SEC EDGAR (10-Q + 8-K), price/technical data, Finviz chart, peer comps, leadership & insider data (DEF 14A proxy + Form 4), Day One journal + Open Brain for prior thesis context.
 
 **Phase 2 — Analysis:**
 - Rule of 40 (SaaS companies): Revenue growth % + FCF margin %. >40 = healthy, >60 = exceptional.
 - DCF Valuation (3 scenarios): Single WACC across all scenarios (⚠️ do NOT vary WACC by scenario). For restaurants/pre-EBITDA: use EBITDA-terminal multiple approach, NOT FCF DCF.
+- Leadership & Governance score (Nash-style, 5 criteria × 0/5/10, max 50): execution, founder/tenure/skin-in-game, capital allocation, insider activity, governance. 40+ feeds the bull case; 0–24 (or any 0 on insider/governance) feeds the bear case. See `references/leadership_scorecard.md`.
 - Revenue multiple cross-check for Section 1 investment summary table.
 
-**Phase 3 — Build:** Excel model (4 sheets: Dashboard, Model, Rule_of_40/Unit_Economics, Options_Strategy) + Word memo (10 sections). Color coding: blue = hardcoded inputs, black = formulas, green = cross-sheet links.
+**Phase 3 — Build:** Excel model (4 sheets: Dashboard, Model, Rule_of_40/Unit_Economics + Leadership_Scorecard block, Options_Strategy) + Word memo (11 sections, incl. Section 3 Management & Governance). Color coding: blue = hardcoded inputs, black = formulas, green = cross-sheet links.
 
 **Phase 4 — Reconcile + Present:** Verify all memo DCF numbers match the model before presenting. Upload both files to Google Drive folder `Stock Ticker Analysis` (ID: `19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446`) for mobile access.
 
@@ -113,6 +115,8 @@ These are hard constraints validated by prior analysis review:
 9. **Options-only mode — time the thesis:** Match option expiry to the realistic timeframe of the thesis, not the cheapest available expiry. Use LEAPS (6–12 month) for multi-quarter theses.
 
 10. **Options-only mode — market implied vs. DCF check:** Always compare the options market's 1-SD implied move against the DCF bull/base/bear spread before recommending a trade. Full workflow in `stock-analysis.skill` → `workflows/options_mode.md`.
+
+11. **Leadership scoring — evidence required, score honestly:** The Management & Governance module (Nash-based) scores 5 criteria at 0/5/10. Every score line MUST cite a specific fact (filing, number, dated event) — no unsupported scores. It is a subjective category, so do not round up: if you are unsure a CEO is a superstar, they are not. A 0 on insider activity or governance is asymmetric — flag it in the Verdict regardless of the composite. Memo Section 3; model Leadership_Scorecard block; full rubric in `references/leadership_scorecard.md`.
 
 ---
 
