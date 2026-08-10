@@ -28,3 +28,10 @@ Each pattern is a markdown file named `pattern_{signal_type}.md` with:
 | File | Signal | Tickers | Status |
 |---|---|---|---|
 | *(none yet — populated as analyses are completed)* | | | |
+
+## Pattern: Traffic-composition de-rate on a beat-and-raise ($BROS, 2026-08-06)
+For premium-multiple growth restaurants (>23x EV/EBITDA), the market treats a decelerating
+TRANSACTION comp as a thesis break even when headline SSS beats and guidance is raised.
+$BROS fell ~18% in a day on transactions +1.7% (vs +3.7% PY) despite raising both FY26
+revenue and EBITDA guidance. Monitor transaction comps, not SSS, as the primary demand
+signal; expect instant multiple compression when ticket/pricing carries the comp.
