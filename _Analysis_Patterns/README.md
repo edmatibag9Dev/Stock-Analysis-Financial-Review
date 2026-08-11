@@ -35,3 +35,16 @@ TRANSACTION comp as a thesis break even when headline SSS beats and guidance is 
 $BROS fell ~18% in a day on transactions +1.7% (vs +3.7% PY) despite raising both FY26
 revenue and EBITDA guidance. Monitor transaction comps, not SSS, as the primary demand
 signal; expect instant multiple compression when ticket/pricing carries the comp.
+
+## Pattern: Rule-of-40 crossing triggers re-rating ($FSLY, 2026-08-10)
+For an inflecting infra/SaaS name trading near mature-peer multiples, the first clean cross
+above Rule of 40 (EBITDA basis) acts as the re-rating catalyst. $FSLY: June 2026 memo scored
+Ro40 at ~37 and named crossing 40 "the single most important fundamental milestone for a
+re-rating"; Q2'26 printed 43.8 (growth 23% + adj. EBITDA 20.8%) and the stock re-rated
+4.4x→6.0x fwd EV/S (+38% vs the June analysis price, incl. a +20.9% day amplified by an
+18% short float). Leading indicators that confirmed the path 1–2 quarters ahead: RPO growth,
+NRR climbing (113%→117%), security/attach mix shift, record gross margins.
+LESSON (process): a purely intrinsic-value accumulation zone ($13–17, base-DCF-anchored)
+was never offered — stock bottomed at technical support (~$18–19, 200-day) before the move.
+For inflecting names with confirming leading indicators, stage adds at technical support
+rather than waiting only for the intrinsic zone. Status: Unconfirmed (1 data point).
