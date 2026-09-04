@@ -24,3 +24,6 @@ outputs/
 #   git add -f "$TICKER/"
 # (Legacy non-$ folders BROS/PLTR/SG/FSLY/TRMB are already tracked and migrate
 #  to $TICKER on next touch.)
+
+# Local scratch: stale git/Office lock files swept aside for manual deletion
+_to_delete/
