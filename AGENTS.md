@@ -32,25 +32,31 @@ Legacy non-`$` folders (`BROS`, `PLTR`, `SG`, `FSLY`, `TRMB`) migrate to the sta
 |---|---|---|
 | `AGENTS.md` | yes | This guide. |
 | `llms.txt` | yes | Machine-readable doc index pointing agents at AGENTS.md, the analysis folder contract, and the per-ticker build scripts. |
-| `README.md` | yes | Human overview, methodology, and the analyses index table. |
+| `README.md` | yes | Human overview, methodology, and the analyses index table (one row per dated run). |
 | `CONTRIBUTING.md` | yes | Canonical commit + README standard. |
 | `CLAUDE.md` | yes | Project instructions / workflow context for agents. |
-| `.gitignore` | yes | Excludes Office lock files, Python cache, OS files, and local `outputs/` + logs. |
+| `.gitignore` | yes | Excludes Office lock files, `__pycache__`, OS files, local `outputs/` + logs, `_to_delete/`, and all `/$*/` ticker folders by default. |
 | `CHANGELOG.md` | yes | Keep a Changelog history of the repo (newest first; dates America/Los_Angeles). |
 | `stock-analysis.skill` | yes | The packaged skill that drives an analysis end to end. |
 | `_Analysis_Patterns/README.md` | yes | Reusable analysis patterns / methodology reference. |
-| `BROS/BROS-2026-06-05/` | yes | Dutch Bros analysis (2026-06-05): 10-section memo + memo generator (`create_bros_memo.js`). |
-| `FSLY/FSLY-2026-06-08/` | yes | Fastly analysis (2026-06-08): memo, valuation model, chart, `build_fsly_model.py` + `create_fsly_memo.js`. |
-| `$NOW/` | yes | ServiceNow (active). `NOW-2026-06-05/` (memo, shared `PLTR_NOW_Investment_Model.xlsx`, `create_now_memo.js`) + Q2 refresh `$NOW_Investment_Memo/Model_2026-07-23`. Migrated to `$`-standard. |
-| `PLTR/PLTR-2026-06-05/` | yes | Palantir analysis (2026-06-05): memo, valuation model, `build_model.py`. |
-| `SG/SG-2026-06-05/` | yes | Sweetgreen analysis (2026-06-05): memo, valuation model, `build_sg_model.py` + `create_sg_memo.js`. |
-| `TRMB/TRMB-2026-06-11/` | yes | Trimble analysis (2026-06-11): memo, valuation model, `build_trmb_model.py` + `create_trmb_memo.js`. |
-| `BROS/BROS_Archive/.gitkeep` | yes | Placeholder keeping the Dutch Bros archive folder in git. |
-| `FSLY/FSLY_Archive/.gitkeep` | yes | Placeholder keeping the Fastly archive folder in git. |
+| `$BROS/$BROS-2026-06-05/` | yes | Dutch Bros (2026-06-05): memo + `create_bros_memo.js`. Memo-only — no model. Its published intrinsic values do not reconcile to their projections; superseded by the August run. |
+| `$BROS/$BROS-2026-08-10/` | yes | Dutch Bros (2026-08-10): memo, model, chart, `build_bros_model.py` + `create_bros_memo.js`. First live model for the ticker; authoritative. |
+| `$BROS/$BROS_Archive/.gitkeep` | yes | Placeholder keeping the Dutch Bros archive folder in git. |
+| `$FSLY/$FSLY-2026-06-08/` | yes | Fastly (2026-06-08): memo, model, chart, `build_fsly_model.py` + `create_fsly_memo.js`. |
+| `$FSLY/$FSLY-2026-08-11/` | yes | Fastly (2026-08-11): memo, model, chart, `build_model.py` + `create_memo.js`. Q2 2026 update. |
+| `$FSLY/$FSLY_Archive/.gitkeep` | yes | Placeholder keeping the Fastly archive folder in git. |
+| `$NOW/NOW-2026-06-05/` | yes | ServiceNow (2026-06-05): memo, shared `PLTR_NOW_Investment_Model.xlsx`, `create_now_memo.js`. Three-WACC DCF — superseded. |
+| `$NOW/NOW_Investment_Memo_2026-07-23.docx`, `$NOW/NOW_Investment_Model_2026-07-23.xlsx` | yes | ServiceNow Q2 refresh (2026-07-23), rebuilt at a single 11% WACC. **Breaks the data contract** — sits at the ticker root instead of `$NOW/$NOW-2026-07-23/`, and ships with no build script. Relocate on the next `$NOW` run; do not retro-move. |
 | `$NOW/NOW_Archive/.gitkeep` | yes | Placeholder keeping the ServiceNow archive folder in git. |
-| `PLTR/PLTR_Archive/.gitkeep` | yes | Placeholder keeping the Palantir archive folder in git. |
+| `$PLTR/$PLTR-2026-06-05/` | yes | Palantir (2026-06-05): memo, model, `build_model.py`. Three-WACC DCF — restated by the August run. |
+| `$PLTR/$PLTR-2026-08-03/` | yes | Palantir (2026-08-03): memo + model, rebuilt at a single 13% WACC. **No build script committed** — cannot be regenerated from this repo. |
+| `$PLTR/$PLTR_Archive/.gitkeep` | yes | Placeholder keeping the Palantir archive folder in git. |
+| `SG/SG-2026-06-05/` | yes | Sweetgreen (2026-06-05): memo, model, `build_sg_model.py` + `create_sg_memo.js`. Legacy non-`$` naming. |
 | `SG/SG_Archive/.gitkeep` | yes | Placeholder keeping the Sweetgreen archive folder in git. |
+| `TRMB/TRMB-2026-06-11/` | yes | Trimble (2026-06-11): memo, model, `build_trmb_model.py` + `create_trmb_memo.js`. Legacy non-`$` naming. |
 | `TRMB/TRMB_Archive/.gitkeep` | yes | Placeholder keeping the Trimble archive folder in git. |
+| `$NUAI/` | no | Nu-Age/NUAI (2026-07-21, AVOID). Drive-only — no open position, so deliberately not committed. Present on disk. |
+| `_to_delete/` | no | Local scratch for stale git/Office lock files swept aside for manual deletion. Ignored since 2026-09-04; was tracked in error before that. |
 
 ## The data contract (per-analysis folder convention)
 
@@ -93,6 +99,25 @@ Rules an agent must preserve:
   commit brokerage credentials, account numbers, position sizes, or any personal/financial PII, and
   never any API key. Keep only public-market analysis in the deliverables.
 - If a build script needs a data-provider key, read it from an env var; never hard-code or commit it.
+
+## Repo hygiene — git lock files
+
+Zero-byte `HEAD.lock`, `index.lock`, and `objects/maintenance.lock` files accumulate in `.git/`
+during analysis runs. Their timestamps match the runs exactly (2026-08-03 14:01 `$PLTR`,
+2026-08-10 16:15 `$BROS`, 2026-08-11 07:39 `$FSLY`), not any scheduled job: git's background
+auto-maintenance (`gc --auto`, which detaches by default) is started by a commit and then killed
+when the session ends, leaving its lock behind. One `objects/maintenance.lock` sat stale for
+four weeks before it was found.
+
+Mitigation applied 2026-09-04: `git config gc.autoDetach false` in this repo, so maintenance runs
+in the foreground and finishes before the session can end. Cost is an occasional pause on commit.
+
+Rules:
+- **Delete a stale lock; never sweep it into a folder.** Earlier sessions moved locks into
+  `_to_delete/`, where 10 of them were then committed and pushed to a public repo.
+- Before deleting, confirm no git process is running (`ps ax | grep -w git`) and that the lock is
+  zero-byte and older than the current session. A lock held by a live git process is real.
+- `_to_delete/` is ignored, not tracked. Nothing there belongs in a commit.
 
 ## Verification gates (run before declaring a change done)
 1. The new analysis lives in a correctly named `$TICKER-{YYYY-MM-DD}/` folder (inside `$TICKER/`); no prior folder overwritten.
