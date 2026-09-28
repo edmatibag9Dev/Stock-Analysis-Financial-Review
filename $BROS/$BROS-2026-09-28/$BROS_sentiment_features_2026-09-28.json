@@ -1,0 +1,58 @@
+{
+ "symbol": "BROS",
+ "pulled_at": "2026-09-28T07:31:00-07:00",
+ "last_bucket": "2026-09-28",
+ "stale_days": 0,
+ "score_now": 61,
+ "label_now": "BULLISH",
+ "band_now": "Slightly Bullish",
+ "pct_1y_weekly": 74.0,
+ "pct_3m_daily": 73.0,
+ "chg_5d": -27,
+ "chg_20d": 22,
+ "volume_now": 54,
+ "volume_pct_3m": 73.8,
+ "watchers": 12304,
+ "trending_rank": null,
+ "close": 37.89,
+ "ret_5d": -0.0535,
+ "ret_20d": -0.2528,
+ "divergence_20d": "price down, crowd warming",
+ "crowding": null,
+ "spike_episodes_3m": [
+  {
+   "start": "2026-08-06",
+   "end": "2026-08-13",
+   "peak_volume": 89,
+   "peak_sentiment": 89
+  },
+  {
+   "start": "2026-09-18",
+   "end": "2026-09-24",
+   "peak_volume": 81,
+   "peak_sentiment": 89
+  }
+ ],
+ "posts": {
+  "n_posts": 30,
+  "window_utc": [
+   "2026-09-25T18:54:55Z",
+   "2026-09-28T14:31:34Z"
+  ],
+  "unique_authors": 18,
+  "top_author_share": 0.2,
+  "multi_ticker_share": 0.067,
+  "tagged_share": 0.333,
+  "bullish_share_of_tagged": 0.8,
+  "n_bearish_tagged": 2
+ },
+ "thin_coverage": false,
+ "flags": [
+  "Divergence over 20 sessions: price down, crowd warming.",
+  "Concentrated stream: one author wrote 20% of recent posts."
+ ],
+ "notes": [
+  "Pulse score 61 differs from last daily bucket 62 (2026-09-28).",
+  "Pulled before the 16:00 ET close: the pull-day price bar was dropped (unfinished session)."
+ ]
+}

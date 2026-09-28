@@ -13,6 +13,7 @@ Usage
   python3 sentiment_features.py validate RAW.json
   python3 sentiment_features.py prices   RAW.json            # adds "prices" from Yahoo (network)
   python3 sentiment_features.py compute  RAW.json [-o OUT.json] [--markdown | --memo]
+  python3 sentiment_features.py skip     SYMBOL --reason "Stocktwits connector not connected in this session"
     --memo      memo text: Technical Setup table + the Bull Case / Bear Case "Social sentiment" lines
     --markdown  full diagnostic table incl. flags (model sheet / review only, not the memo)
 
@@ -387,6 +388,16 @@ def to_memo(f):
     return "\n".join(out)
 
 
+def skip_memo(symbol, reason, when=None):
+    """Memo text when Phase 1H cannot run. The sentiment layer is skipped, never estimated."""
+    when = when or dt.datetime.now().astimezone().isoformat(timespec="minutes")
+    line = f"Social sentiment (Stocktwits): skipped — {reason} ({when[:10]}). No sentiment layer in this memo."
+    return "\n".join([
+        f"TECHNICAL SETUP line (replaces the table): Social sentiment (Stocktwits) for {symbol}: skipped — {reason}.",
+        "", "BULL CASE closing line:", line, "", "BEAR CASE closing line:", line,
+        "", f"CLOSING SUMMARY status line: Stocktwits: skipped — {reason}"])
+
+
 # ---------------------------------------------------------------- prices (network)
 def fetch_prices(symbol, rng="6mo"):
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range={rng}&interval=1d"
@@ -404,13 +415,17 @@ def fetch_prices(symbol, rng="6mo"):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("cmd", choices=["validate", "prices", "compute"])
-    ap.add_argument("raw")
+    ap.add_argument("cmd", choices=["validate", "prices", "compute", "skip"])
+    ap.add_argument("raw", help="capture file (validate/prices/compute) or SYMBOL (skip)")
+    ap.add_argument("--reason", default="Stocktwits connector not connected in this session")
     ap.add_argument("-o", "--out")
     fmt = ap.add_mutually_exclusive_group()
     fmt.add_argument("--markdown", action="store_true")
     fmt.add_argument("--memo", action="store_true")
     a = ap.parse_args(argv)
+    if a.cmd == "skip":
+        print(skip_memo(a.raw.upper().lstrip("$"), a.reason))
+        return 0
     raw = load(a.raw)
 
     if a.cmd == "validate":

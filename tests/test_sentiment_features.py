@@ -104,6 +104,21 @@ class TestFixtures(unittest.TestCase):
             self.assertIn(label, memo)
         self.assertNotIn("SECTION 4", memo)
 
+    def test_skip_memo_never_invents_numbers(self):
+        out = sf.skip_memo("BROS", "Stocktwits connector not connected in this session", "2026-09-28T08:00-07:00")
+        self.assertIn("skipped — Stocktwits connector not connected in this session", out)
+        self.assertIn("CLOSING SUMMARY status line: Stocktwits: skipped", out)
+        for label in ("TECHNICAL SETUP line", "BULL CASE closing line:", "BEAR CASE closing line:"):
+            self.assertIn(label, out)
+        self.assertNotRegex(out, r"score \d")
+
+    def test_skip_cli(self):
+        import contextlib, io
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.assertEqual(sf.main(["skip", "$nuai"]), 0)
+        self.assertIn("for NUAI: skipped", buf.getvalue())
+
     def test_markdown_renders(self):
         md = sf.to_markdown(self.nuai)
         self.assertIn("| Sentiment score (0-100) | 74 (Slightly Bullish) |", md)

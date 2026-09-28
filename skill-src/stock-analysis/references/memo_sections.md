@@ -218,7 +218,9 @@ Purpose: Inform timing and options strike selection.
 `sentiment_features.py`. Exactly these rows: sentiment score and band, change over 20
 sessions, message volume (0–100), watchers, and a pulled-at timestamp in the caption. No chart,
 no flags, and no interpretation here. This table is where the numbers used in the Bull and Bear Case lines live.
-If Stocktwits has no coverage, write one line: "No Stocktwits coverage for {TICKER}."
+If Stocktwits has no coverage, write one line: "No Stocktwits coverage for {TICKER}." If the connector is
+not connected in the session, paste the output of `sentiment_features.py skip` instead (Technical Setup
+line plus both case lines, all stating the layer was skipped and why). Never substitute other sources.
 
 **Then:** 2–3 sentences of technical interpretation:
 - Is the stock in an uptrend, downtrend, or consolidation?

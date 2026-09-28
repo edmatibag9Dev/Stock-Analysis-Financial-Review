@@ -52,7 +52,7 @@ PLAN-stocktwits-sentiment-2026-Q3.md — Plan, decisions and phase results for t
 .gitignore                 — Excludes Office locks, __pycache__, OS files, and $-ticker folders by default
 _Analysis_Patterns/        — Reusable methodology patterns extracted from completed analyses
 _Analysis_Patterns/stocktwits-calibration-2026-09/ — calibrate.py, FINDINGS.md, results, and the 7-ticker data it ran on
-$BROS/                     — Dutch Bros (active): 2026-06-05 and 2026-08-10 runs + archive
+$BROS/                     — Dutch Bros (active): 2026-06-05, 2026-08-10 and 2026-09-28 runs + archive
 $FSLY/                     — Fastly (active): 2026-06-08 and 2026-08-11 runs + archive
 $NOW/                      — ServiceNow (active): 2026-06-05 run, 2026-07-23 refresh + archive
 $PLTR/                     — Palantir (active): 2026-06-05 and 2026-08-03 runs + archive
@@ -85,6 +85,7 @@ npm install -g docx
 **Regenerate a deliverable** — run the script from inside its own analysis folder:
 
 ```bash
+cd '$BROS/$BROS-2026-09-28' && python3 build_bros_model.py && python3 make_chart.py && NODE_PATH=<docx node_modules> node create_memo.js .   # needs $BROS_sentiment_*_2026-09-28.json beside it
 cd '$BROS/$BROS-2026-08-10' && node create_bros_memo.js && python3 build_bros_model.py
 cd '$FSLY/$FSLY-2026-08-11' && node create_memo.js       && python3 build_model.py
 cd '$FSLY/$FSLY-2026-06-08' && node create_fsly_memo.js  && python3 build_fsly_model.py
@@ -134,6 +135,7 @@ Newest run per ticker first. DCF values are intrinsic value per share, bull / ba
 
 | Ticker | Company | Date | Rating | DCF Bull / Base / Bear |
 |---|---|---|---|---|
+| `$BROS` | Dutch Bros | 2026-09-28 | ACCUMULATE (staged) — maintained; final tranche waits for the Nov 4 Q3 print | $96.52 / $58.77 / $25.91 (unchanged; price $37.89) |
 | `$BROS` | Dutch Bros | 2026-08-10 | ACCUMULATE (staged) — upgraded from HOLD | $96.52 / $58.77 / $25.91 |
 | `$BROS` | Dutch Bros | 2026-06-05 | HOLD / ACCUMULATE ON PULLBACK | $76 / $47 / $26 † |
 | `$FSLY` | Fastly | 2026-08-11 | HOLD — trim into strength; do not add | $23.59 / $13.37 / $6.93 |

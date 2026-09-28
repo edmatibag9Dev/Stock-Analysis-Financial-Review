@@ -4,6 +4,16 @@ All notable changes to Stock Analysis Financial Review are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/); dates are America/Los_Angeles.
 Gitignored data/output files are never committed.
 
+## [2026-09-28] — $BROS update with Stocktwits; connector call made mandatory in the skill
+
+### Added
+- `$BROS/$BROS-2026-09-28/` — quarterly update between earnings: ACCUMULATE (staged) maintained, final tranche moved to the Nov 4 Q3 print; DCF unchanged ($96.52 / $58.77 / $25.91) at $37.89. First committed analysis with the Stocktwits layer (raw capture kept local).
+- `sentiment_features.py skip SYMBOL --reason …` — scripted memo text when Phase 1H cannot run; two new tests.
+
+### Changed
+- Skill Phase 1H is mandatory and starts with step 0: load the connector tools via ToolSearch, check all five by name, retry for any missing (a single query was shown to miss one), and if none exist use the scripted skip — never estimate sentiment from other sources. The Yahoo `prices` step may be skipped when the sandbox blocks it. The closing summary must state "Stocktwits: called {time}" or "Stocktwits: skipped — {reason}"; reconciliation step 4 and AGENTS gate 2b check it.
+- `stock-analysis.skill` repacked (identical to `skill-src/`). README analyses table and AGENTS file map gain the $BROS row.
+
 ## [2026-09-28] — Stocktwits social-sentiment data layer
 
 ### Added

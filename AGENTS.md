@@ -46,6 +46,7 @@ Legacy non-`$` folders (`BROS`, `PLTR`, `SG`, `FSLY`, `TRMB`) migrate to the sta
 | `_Analysis_Patterns/stocktwits-calibration-2026-09/` | yes | 7-ticker calibration of Stocktwits sentiment vs price: `calibrate.py`, `FINDINGS.md` (the basis for the no-edge rule), `results.md/.json`, `data/` (sentiment series + Yahoo closes; no usernames). |
 | `$BROS/$BROS-2026-06-05/` | yes | Dutch Bros (2026-06-05): memo + `create_bros_memo.js`. Memo-only — no model. Its published intrinsic values do not reconcile to their projections; superseded by the August run. |
 | `$BROS/$BROS-2026-08-10/` | yes | Dutch Bros (2026-08-10): memo, model, chart, `build_bros_model.py` + `create_bros_memo.js`. First live model for the ticker; authoritative. |
+| `$BROS/$BROS-2026-09-28/` | yes | Dutch Bros (2026-09-28): quarterly update between earnings and the first committed run with the Stocktwits layer — memo (.docx + .md twin), model with Sentiment sheet, chart, features JSON, `bros_hist.json`, `build_bros_model.py` + `create_memo.js` + `make_chart.py` + `eval_model.py`. The raw Stocktwits capture stays local (excluded at `git add -f`). |
 | `$BROS/$BROS_Archive/.gitkeep` | yes | Placeholder keeping the Dutch Bros archive folder in git. |
 | `$FSLY/$FSLY-2026-06-08/` | yes | Fastly (2026-06-08): memo, model, chart, `build_fsly_model.py` + `create_fsly_memo.js`. |
 | `$FSLY/$FSLY-2026-08-11/` | yes | Fastly (2026-08-11): memo, model, chart, `build_model.py` + `create_memo.js`. Q2 2026 update. |
@@ -136,7 +137,7 @@ Rules:
 ## Verification gates (run before declaring a change done)
 1. The new analysis lives in a correctly named `$TICKER-{YYYY-MM-DD}/` folder (inside `$TICKER/`); no prior folder overwritten.
 2. Memo has all 11 sections (incl. Management & Governance); model has its 4 sheets + Leadership_Scorecard + Sentiment sheet (where a model applies).
-2b. Sentiment layer: capture passes `validate`; Bull Case, Bear Case and Technical Setup numbers match the Sentiment sheet; no sentiment wording in the Summary, Valuation, Options or Verdict (the Sources note may cite Stocktwits); no cell outside the Sentiment sheet references it.
+2b. Sentiment layer: a validated capture exists, or the memo carries the scripted `skip` text and the closing summary says "Stocktwits: skipped — {reason}" (never estimated from other sources); capture passes `validate`; Bull Case, Bear Case and Technical Setup numbers match the Sentiment sheet; no sentiment wording in the Summary, Valuation, Options or Verdict (the Sources note may cite Stocktwits); no cell outside the Sentiment sheet references it.
 2c. Skill changes: tests pass, and the repacked `stock-analysis.skill` unzips identical to `skill-src/stock-analysis/`.
 2a. Repo vs Drive: Drive upload done for every run; ticker committed to the repo only if it's an active position/watchlist (else Drive-only).
 3. README analyses table updated (ticker, company, date, rating, DCF bull/base/bear).

@@ -262,7 +262,23 @@ with price on the same day and predicts nothing over the next 1–20 sessions �
 
 Tools: the Stocktwits MCP connector (read-only). Script: `scripts/sentiment_features.py` in this
 skill's folder. The script never calls Stocktwits itself. Claude pulls the data and writes one capture file.
+**Phase 1H is mandatory on every run** (new analysis and quarterly update). It either produces a validated
+capture file or an explicit, reported skip — never a silent omission.
 
+0. **Load the connector tools first.** In a session the tools carry a connector prefix
+   (`mcp__<connector-id>__get_symbol_pulse`) and are often deferred. Before any call:
+   a. Run ToolSearch `query: "stocktwits sentiment history message volume history symbol pulse messages"`,
+      `max_results: 10`.
+   b. Check that five tools whose names END in these are loaded: `get_symbol`, `get_symbol_pulse`,
+      `get_sentiment_history`, `get_message_volume_history`, `get_symbol_messages`. One query does not
+      always return all five (tested 2026-09-28: a narrower query missed `get_message_volume_history`,
+      the wider one missed `get_symbol`). For each missing one, search again with its own words (e.g.
+      `"stocktwits get_symbol metadata current price"`), or `select:` it by full name once the prefix is known.
+   c. **If no Stocktwits tool is found at all**, the connector is not connected in this
+   session: run `python3 scripts/sentiment_features.py skip "<SYMBOL>" --reason "Stocktwits connector not
+   connected in this session"` and paste its output into Technical Setup and both case lines, skip steps
+   1–8, and report it in the closing summary. **Never estimate sentiment from web search, news or
+   anything else** — no connector means no sentiment layer.
 1. `get_symbol(TICKER)` — confirm coverage. If there is none, write "No Stocktwits coverage for
    {TICKER}" in Technical Setup, use the thin-coverage line in the Bull and Bear Cases, and skip the rest.
 2. `get_symbol_pulse(TICKER)` — snapshot: `sentiment.score` + `label`, `message_volume.score` +
@@ -277,7 +293,8 @@ skill's folder. The script never calls Stocktwits itself. Claude pulls the data 
    - **Never copy** the legacy `bull_pct` / `bear_pct` (they contradict the score: $NOW read 96% bullish at score 40), the legacy volume `label`, or the raw volume `value`.
 7. Run, quoting paths:
    `python3 scripts/sentiment_features.py validate "<raw>"` → must print OK
-   `python3 scripts/sentiment_features.py prices "<raw>"` (adds Yahoo closes)
+   `python3 scripts/sentiment_features.py prices "<raw>"` (adds Yahoo closes; if the sandbox blocks the
+   network call, skip it — `compute` still runs, leaves the price-return fields empty and adds a note)
    `python3 scripts/sentiment_features.py compute "<raw>" -o "<features>" --memo`
 8. Check: the last daily bucket should equal the pulse score (the script adds a note if not), and
    the series lengths should match what the tools returned. **The newest one or two daily buckets are
@@ -285,6 +302,8 @@ skill's folder. The script never calls Stocktwits itself. Claude pulls the data 
    and 58 on Sep 28). Treat the pulse score as the "now" value, always show the pull timestamp, and
    never compare a new run's newest bucket with an old run's saved one as if both were final. The `--memo` output is pasted
    unchanged into the Bull Case, Bear Case and Technical Setup (template: `references/memo_sections.md`).
+9. Record the outcome for the closing summary: **"Stocktwits: called {pulled_at}"** (capture file
+   validated) or **"Stocktwits: skipped — {reason}"** (connector not connected, or no coverage).
 
 ---
 
@@ -415,7 +434,7 @@ Caption: `"{TICKER} Daily Chart — SMA 20/50/200 | Source: Finviz.com | {Date}"
 1. Open the Excel model and note the DCF intrinsic prices per share (bull/base/bear).
 2. Search the Word memo for those same numbers — they must match exactly.
 3. If any discrepancy exists, update the memo to match the model (model is authoritative).
-4. Sentiment: the score, 20-session change, volume and watchers in the Technical Setup table, the Bull Case line and the Bear Case line must match the Sentiment sheet. The pulled-at date must match the capture file. Confirm no sentiment wording appears in the Investment Summary, the DCF/Valuation section, Options Strategy or the Verdict — except the Sources note, where Stocktwits is cited as a source.
+4. Sentiment: a validated `$TICKER_sentiment_raw_{date}.json` exists, OR the memo carries the scripted skip text and the summary says "skipped — {reason}". The score, 20-session change, volume and watchers in the Technical Setup table, the Bull Case line and the Bear Case line must match the Sentiment sheet. The pulled-at date must match the capture file. Confirm no sentiment wording appears in the Investment Summary, the DCF/Valuation section, Options Strategy or the Verdict — except the Sources note, where Stocktwits is cited as a source.
 
 **Then deliver both deliverables** to the user (`SendUserFile`) and present with
 `mcp__cowork__present_files` if available. Google Drive upload (Phase 4B) happens for EVERY analysis.
@@ -480,7 +499,7 @@ small enough to encode in one call.
 
 After uploading, share the link: https://drive.google.com/drive/folders/19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446
 
-Close with a 2–3 sentence summary: verdict + strongest reason, biggest risk, and confirmation that both the local `$TICKER/` folder and the Drive `$TICKER/` folder are populated.
+Close with a 2–3 sentence summary: verdict + strongest reason, biggest risk, and confirmation that both the local `$TICKER/` folder and the Drive `$TICKER/` folder are populated. End with the Phase 1H status line — "Stocktwits: called {pulled_at}" or "Stocktwits: skipped — {reason}" — so Ed can see whether the connector ran.
 
 ---
 
