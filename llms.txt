@@ -14,6 +14,10 @@
 ## Engine
 - [stock-analysis.skill](stock-analysis.skill): packaged Cowork skill driving an analysis end to end — research, model build, memo build.
 - [_Analysis_Patterns/README.md](_Analysis_Patterns/README.md): reusable analysis patterns / methodology reference.
+- [skill-src/stock-analysis/SKILL.md](skill-src/stock-analysis/SKILL.md): unpacked skill source; `stock-analysis.skill` is a zip of this folder.
+- [skill-src/stock-analysis/scripts/sentiment_features.py](skill-src/stock-analysis/scripts/sentiment_features.py): Phase 1H Stocktwits metrics (capture schema in its docstring).
+- [tests/test_sentiment_features.py](tests/test_sentiment_features.py): unittest suite for the sentiment script.
+- [_Analysis_Patterns/stocktwits-calibration-2026-09/FINDINGS.md](_Analysis_Patterns/stocktwits-calibration-2026-09/FINDINGS.md): why sentiment is a data layer, not an edge.
 
 ## Analyses
 - [BROS/BROS-2026-06-05/create_bros_memo.js](BROS/BROS-2026-06-05/create_bros_memo.js): Dutch Bros memo generator (memo .docx beside it).
@@ -26,5 +30,6 @@
 - Memo is always 10 sections; model is the 4-sheet layout (financials, projections, DCF, options).
 - DCF is 3-scenario (bull/base/bear) with a single WACC; EBITDA-terminal for pre-profitable names.
 - Keep the README analyses table in sync (ticker, company, date, rating, DCF bull/base/bear).
+- Stocktwits sentiment is context only: Bull/Bear closing lines, a Technical Setup table and a Sentiment sheet — never a valuation, rating or strike input.
 - Public repo: never commit brokerage credentials, account numbers, position sizes, PII, or API keys; provider keys come from env vars only.
 - Commits follow CONTRIBUTING.md; README updated on every feat/data commit.

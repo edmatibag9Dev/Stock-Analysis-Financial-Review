@@ -18,7 +18,8 @@ holding the memo, the model, and the build script that generated them.**
 have full context. This git repo is the **lean active working set**: a ticker is committed only if Ed
 has an open position, an active options trade, or a live watchlist entry — everything else is
 Drive-only (e.g. `$NUAI`). The `.gitignore` ignores all `/$*/` ticker folders by default; add an
-approved ticker with `git add -f "$TICKER/"`.
+approved ticker with `git add -f "$TICKER/" ':(exclude)**/*_sentiment_raw_*.json'` — the exclude keeps
+Stocktwits captures local, since `-f` overrides `.gitignore`.
 
 **Naming: `$TICKER` everywhere** — folder `$TICKER/`, subfolder `$TICKER-{YYYY-MM-DD}/`, archive
 `$TICKER_Archive/`, files `$TICKER_Investment_Memo_{date}.docx` / `$TICKER_Investment_Model_{date}.xlsx`
@@ -35,10 +36,14 @@ Legacy non-`$` folders (`BROS`, `PLTR`, `SG`, `FSLY`, `TRMB`) migrate to the sta
 | `README.md` | yes | Human overview, methodology, and the analyses index table (one row per dated run). |
 | `CONTRIBUTING.md` | yes | Canonical commit + README standard. |
 | `CLAUDE.md` | yes | Project instructions / workflow context for agents. |
-| `.gitignore` | yes | Excludes Office lock files, `__pycache__`, OS files, local `outputs/` + logs, `_to_delete/`, and all `/$*/` ticker folders by default. |
+| `.gitignore` | yes | Excludes Office lock files, `__pycache__`, OS files, local `outputs/` + logs, `_to_delete/`, all `/$*/` ticker folders by default, and `$TICKER_sentiment_raw_*.json` captures (kept local even for force-added tickers). |
 | `CHANGELOG.md` | yes | Keep a Changelog history of the repo (newest first; dates America/Los_Angeles). |
-| `stock-analysis.skill` | yes | The packaged skill that drives an analysis end to end. |
+| `stock-analysis.skill` | yes | The packaged skill that drives an analysis end to end — a zip of `skill-src/stock-analysis/`. Repack after any source edit, then re-upload in claude.ai; the installed copy does not update itself. |
+| `skill-src/stock-analysis/` | yes | Unpacked skill source (since 2026-09-28): `SKILL.md`, `references/`, `workflows/`, `scripts/sentiment_features.py` (Phase 1H Stocktwits metrics). Edit here, not inside the zip. |
+| `tests/test_sentiment_features.py`, `tests/fixtures/` | yes | `unittest` suite for the sentiment script; fixtures are real 2026-09-27 Stocktwits pulls for $NUAI and $NOW, anonymised (no usernames, no post text). |
+| `PLAN-stocktwits-sentiment-2026-Q3.md` | yes | Plan, inventory, decisions (D1–D8, R1–R2) and phase results for the sentiment layer. |
 | `_Analysis_Patterns/README.md` | yes | Reusable analysis patterns / methodology reference. |
+| `_Analysis_Patterns/stocktwits-calibration-2026-09/` | yes | 7-ticker calibration of Stocktwits sentiment vs price: `calibrate.py`, `FINDINGS.md` (the basis for the no-edge rule), `results.md/.json`, `data/` (sentiment series + Yahoo closes; no usernames). |
 | `$BROS/$BROS-2026-06-05/` | yes | Dutch Bros (2026-06-05): memo + `create_bros_memo.js`. Memo-only — no model. Its published intrinsic values do not reconcile to their projections; superseded by the August run. |
 | `$BROS/$BROS-2026-08-10/` | yes | Dutch Bros (2026-08-10): memo, model, chart, `build_bros_model.py` + `create_bros_memo.js`. First live model for the ticker; authoritative. |
 | `$BROS/$BROS_Archive/.gitkeep` | yes | Placeholder keeping the Dutch Bros archive folder in git. |
@@ -55,7 +60,7 @@ Legacy non-`$` folders (`BROS`, `PLTR`, `SG`, `FSLY`, `TRMB`) migrate to the sta
 | `SG/SG_Archive/.gitkeep` | yes | Placeholder keeping the Sweetgreen archive folder in git. |
 | `TRMB/TRMB-2026-06-11/` | yes | Trimble (2026-06-11): memo, model, `build_trmb_model.py` + `create_trmb_memo.js`. Legacy non-`$` naming. |
 | `TRMB/TRMB_Archive/.gitkeep` | yes | Placeholder keeping the Trimble archive folder in git. |
-| `$NUAI/` | no | Nu-Age/NUAI (2026-07-21, AVOID). Drive-only — no open position, so deliberately not committed. Present on disk. |
+| `$NUAI/` | no | New Era Energy & Digital — 2026-07-21, 2026-09-08, 2026-09-28 (all AVOID; 2026-09-28 was the sentiment-layer pilot). Drive-only — no open position, so deliberately not committed. Present on disk. |
 | `_to_delete/` | no | Local scratch for stale git/Office lock files swept aside for manual deletion. Ignored since 2026-09-04; was tracked in error before that. |
 
 ## The data contract (per-analysis folder convention)
@@ -66,7 +71,9 @@ README index table) rely on that name to locate an analysis by ticker and date. 
 ```
 $TICKER/$TICKER-{YYYY-MM-DD}/
   $TICKER_Investment_Memo_{date}.docx   # 11-section memo — verdict + DCF bull/base/bear
-  $TICKER_Investment_Model_{date}.xlsx  # valuation model (when the ticker warrants one)
+  $TICKER_Investment_Model_{date}.xlsx  # valuation model (when the ticker warrants one) + Sentiment sheet
+  $TICKER_sentiment_raw_{date}.json     # Stocktwits capture (Phase 1H) — gitignored, local only
+  $TICKER_sentiment_features_{date}.json# metrics computed from the capture
   build_model.py | create_*.js          # the generator for the above (plain name, no $), beside its output
 ```
 
@@ -77,19 +84,26 @@ Rules an agent must preserve:
   for SaaS, peer comps, technical setup, options overlay, verdict); the model is the 4-sheet layout
   above plus a Leadership_Scorecard block on the Rule_of_40 sheet.
 - **DCF is 3-scenario (bull/base/bear) with a single WACC**; EBITDA-terminal for pre-profitable names.
+- **Stocktwits sentiment is a data layer, not an edge.** It appears only as one line closing the Bull
+  Case, one closing the Bear Case, a four-row table in Technical Setup, and the Sentiment sheet. It never
+  changes a DCF input, scenario weight, rating or options strike, and the Sentiment sheet links to nothing.
+  Find memo sections by name — numbering shifts when a memo adds sections.
 - Keep the README's analyses table in sync (ticker, company, date, rating, DCF bull/base/bear).
 
 ## How it works
 
 1. Invoke the workflow (`stock-analysis.skill`) for a ticker.
-2. Research: SEC 10-Q/8-K filings, guidance, unit economics; technicals (SMA 20/50/200, RSI, IV rank).
+2. Research: SEC 10-Q/8-K filings, guidance, unit economics; technicals (SMA 20/50/200, RSI, IV rank);
+   Phase 1H Stocktwits capture via the MCP connector → `sentiment_features.py` (validate / prices / compute).
 3. The build script generates the memo `.docx` (+ model `.xlsx`) into a fresh `$TICKER-{YYYY-MM-DD}/`.
 4. Update the README analyses table with the verdict and DCF scenarios.
 
 ## How to extend
 
 - **New analysis:** create `$TICKER-{YYYY-MM-DD}/` (inside `$TICKER/`), run/author its build script, add a README row. Then decide repo vs Drive-only (active engagement → repo).
-- **Change memo/model structure:** update `stock-analysis.skill` + `_Analysis_Patterns/` so every future
+- **Change the skill:** edit `skill-src/stock-analysis/`, run `python3 -m unittest discover -s tests`, repack
+  `stock-analysis.skill` from it (README "How to Use"), confirm the zip matches the folder, and ask Ed to re-upload.
+- **Change memo/model structure:** update `skill-src/` (then repack) + `_Analysis_Patterns/` so every future
   analysis inherits it; do not retro-edit archived deliverables.
 - **Prerequisites** for the build scripts are documented in the README ("Running the Build Scripts").
 
@@ -121,7 +135,9 @@ Rules:
 
 ## Verification gates (run before declaring a change done)
 1. The new analysis lives in a correctly named `$TICKER-{YYYY-MM-DD}/` folder (inside `$TICKER/`); no prior folder overwritten.
-2. Memo has all 11 sections (incl. Management & Governance); model has its 4 sheets + Leadership_Scorecard (where a model applies).
+2. Memo has all 11 sections (incl. Management & Governance); model has its 4 sheets + Leadership_Scorecard + Sentiment sheet (where a model applies).
+2b. Sentiment layer: capture passes `validate`; Bull Case, Bear Case and Technical Setup numbers match the Sentiment sheet; no sentiment wording in the Summary, Valuation, Options or Verdict (the Sources note may cite Stocktwits); no cell outside the Sentiment sheet references it.
+2c. Skill changes: tests pass, and the repacked `stock-analysis.skill` unzips identical to `skill-src/stock-analysis/`.
 2a. Repo vs Drive: Drive upload done for every run; ticker committed to the repo only if it's an active position/watchlist (else Drive-only).
 3. README analyses table updated (ticker, company, date, rating, DCF bull/base/bear).
 4. No secrets/PII committed (grep the diff for keys/account numbers).

@@ -4,6 +4,24 @@ All notable changes to Stock Analysis Financial Review are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/); dates are America/Los_Angeles.
 Gitignored data/output files are never committed.
 
+## [2026-09-28] — Stocktwits social-sentiment data layer
+
+### Added
+- `skill-src/stock-analysis/` — the skill source, unpacked from `stock-analysis.skill` so edits are reviewable; the `.skill` is now repacked from it.
+- Skill Phase 1H (Stocktwits via the MCP connector) and `scripts/sentiment_features.py` (`validate` / `prices` / `compute --memo`). Output: one "Social sentiment" line closing the Bull Case and one closing the Bear Case, a four-row Technical Setup table, and a Sentiment model sheet. Rule: a data layer, not an edge — never a DCF input, scenario weight, rating or options strike.
+- `tests/` — 27 `unittest` tests plus anonymised $NUAI/$NOW fixtures from 2026-09-27.
+- `_Analysis_Patterns/stocktwits-calibration-2026-09/` — 7-ticker study: same-day r = 0.19 with price, next-day r = 0.02, no forward return or volatility signal over 1–20 sessions.
+- `PLAN-stocktwits-sentiment-2026-Q3.md` — plan, decisions and phase results.
+
+### Changed
+- `stock-analysis.skill` repacked: Phase 1H, quarterly-update refresh, Sentiment sheet spec, reconciliation step 4, options rule 7, and sections referenced by name rather than number (a $NUAI pilot memo with 13 sections broke the number references).
+- `.gitignore` and every `git add -f` instruction now keep `$TICKER_sentiment_raw_*.json` captures local (`-f` overrides `.gitignore`, so the pathspec exclude is the guard).
+- README, AGENTS.md (file map, data contract, gates 2b/2c), CLAUDE.md, llms.txt.
+
+### Notes
+- Pilot: $NUAI 2026-09-28 quarterly update ran end to end on the new skill (Drive-only, not committed). Rating AVOID unchanged; probability-weighted value $1.92.
+- The installed skill updates only when Ed re-uploads `stock-analysis.skill` in claude.ai.
+
 ## [2026-07-12] — FSLY + TRMB analyses; docs synced to TICKER/ layout
 
 ### Added

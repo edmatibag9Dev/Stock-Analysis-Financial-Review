@@ -1,0 +1,358 @@
+{
+ "tickers": [
+  "BROS",
+  "FSLY",
+  "NOW",
+  "NUAI",
+  "PLTR",
+  "SG",
+  "TRMB"
+ ],
+ "coverage": {
+  "BROS": {
+   "daily_rows": 127,
+   "first": "2026-03-26",
+   "last": "2026-09-25",
+   "months": 59
+  },
+  "FSLY": {
+   "daily_rows": 127,
+   "first": "2026-03-26",
+   "last": "2026-09-25",
+   "months": 59
+  },
+  "NOW": {
+   "daily_rows": 126,
+   "first": "2026-03-27",
+   "last": "2026-09-25",
+   "months": 59
+  },
+  "NUAI": {
+   "daily_rows": 127,
+   "first": "2026-03-26",
+   "last": "2026-09-25",
+   "months": 13
+  },
+  "PLTR": {
+   "daily_rows": 127,
+   "first": "2026-03-26",
+   "last": "2026-09-25",
+   "months": 59
+  },
+  "SG": {
+   "daily_rows": 127,
+   "first": "2026-03-26",
+   "last": "2026-09-25",
+   "months": 57
+  },
+  "TRMB": {
+   "daily_rows": 127,
+   "first": "2026-03-26",
+   "last": "2026-09-25",
+   "months": 59
+  }
+ },
+ "lead_lag": {
+  "same_day  (d_sent_t vs ret_t)": [
+   0.19,
+   881,
+   5.73
+  ],
+  "next_day  (d_sent_t vs ret_t+1)": [
+   0.023,
+   874,
+   0.67
+  ],
+  "prior_day (ret_t-1 vs d_sent_t)": [
+   0.029,
+   881,
+   0.86
+  ],
+  "level vs fwd5": [
+   -0.01,
+   853,
+   -0.31
+  ],
+  "level vs fwd20": [
+   -0.041,
+   748,
+   -1.11
+  ]
+ },
+ "per_ticker": {
+  "BROS": {
+   "same_day": -0.187,
+   "next_day": -0.091,
+   "level_fwd20": 0.046
+  },
+  "FSLY": {
+   "same_day": 0.117,
+   "next_day": 0.045,
+   "level_fwd20": -0.037
+  },
+  "NOW": {
+   "same_day": 0.04,
+   "next_day": 0.035,
+   "level_fwd20": -0.202
+  },
+  "NUAI": {
+   "same_day": 0.514,
+   "next_day": 0.088,
+   "level_fwd20": -0.31
+  },
+  "PLTR": {
+   "same_day": 0.199,
+   "next_day": 0.022,
+   "level_fwd20": -0.006
+  },
+  "SG": {
+   "same_day": 0.256,
+   "next_day": -0.03,
+   "level_fwd20": 0.177
+  },
+  "TRMB": {
+   "same_day": 0.071,
+   "next_day": -0.019,
+   "level_fwd20": -0.213
+  }
+ },
+ "extremes": {
+  "all days": {
+   "n": 888,
+   "fwd5": 0.0135,
+   "fwd10": 0.0205,
+   "fwd20": 0.0328,
+   "rv10": 0.706,
+   "share_fwd10_neg": 0.43
+  },
+  "score >= 75 (start)": {
+   "n": 25,
+   "fwd5": 0.0305,
+   "fwd10": 0.0572,
+   "fwd20": 0.047,
+   "rv10": 0.7441,
+   "share_fwd10_neg": 0.36
+  },
+  "score <= 24 (start)": {
+   "n": 6,
+   "fwd5": 0.0023,
+   "fwd10": -0.0816,
+   "fwd20": -0.2107,
+   "rv10": 1.0822,
+   "share_fwd10_neg": 0.67
+  },
+  "score >= 75 & vol >= 75 (start)": {
+   "n": 19,
+   "fwd5": 0.0062,
+   "fwd10": 0.0012,
+   "fwd20": 0.004,
+   "rv10": 0.8157,
+   "share_fwd10_neg": 0.47
+  }
+ },
+ "sweep": [
+  {
+   "score>=": 65,
+   "vol>=": 60,
+   "episodes": 29,
+   "tickers": 7,
+   "fwd10_mean": 0.0441,
+   "share_neg": 0.42,
+   "rv10_mean": 0.8333
+  },
+  {
+   "score>=": 65,
+   "vol>=": 70,
+   "episodes": 25,
+   "tickers": 6,
+   "fwd10_mean": 0.0441,
+   "share_neg": 0.41,
+   "rv10_mean": 0.8342
+  },
+  {
+   "score>=": 65,
+   "vol>=": 75,
+   "episodes": 21,
+   "tickers": 6,
+   "fwd10_mean": 0.0024,
+   "share_neg": 0.56,
+   "rv10_mean": 0.8487
+  },
+  {
+   "score>=": 65,
+   "vol>=": 80,
+   "episodes": 18,
+   "tickers": 6,
+   "fwd10_mean": -0.0038,
+   "share_neg": 0.6,
+   "rv10_mean": 0.8362
+  },
+  {
+   "score>=": 70,
+   "vol>=": 60,
+   "episodes": 28,
+   "tickers": 7,
+   "fwd10_mean": 0.0457,
+   "share_neg": 0.48,
+   "rv10_mean": 0.8034
+  },
+  {
+   "score>=": 70,
+   "vol>=": 70,
+   "episodes": 24,
+   "tickers": 6,
+   "fwd10_mean": 0.0422,
+   "share_neg": 0.45,
+   "rv10_mean": 0.8041
+  },
+  {
+   "score>=": 70,
+   "vol>=": 75,
+   "episodes": 21,
+   "tickers": 6,
+   "fwd10_mean": -0.0057,
+   "share_neg": 0.61,
+   "rv10_mean": 0.7938
+  },
+  {
+   "score>=": 70,
+   "vol>=": 80,
+   "episodes": 19,
+   "tickers": 6,
+   "fwd10_mean": -0.0055,
+   "share_neg": 0.62,
+   "rv10_mean": 0.8252
+  },
+  {
+   "score>=": 75,
+   "vol>=": 60,
+   "episodes": 20,
+   "tickers": 6,
+   "fwd10_mean": 0.0377,
+   "share_neg": 0.47,
+   "rv10_mean": 0.783
+  },
+  {
+   "score>=": 75,
+   "vol>=": 70,
+   "episodes": 19,
+   "tickers": 6,
+   "fwd10_mean": 0.0459,
+   "share_neg": 0.44,
+   "rv10_mean": 0.7929
+  },
+  {
+   "score>=": 75,
+   "vol>=": 75,
+   "episodes": 19,
+   "tickers": 6,
+   "fwd10_mean": 0.0012,
+   "share_neg": 0.56,
+   "rv10_mean": 0.8157
+  },
+  {
+   "score>=": 75,
+   "vol>=": 80,
+   "episodes": 17,
+   "tickers": 6,
+   "fwd10_mean": 0.0023,
+   "share_neg": 0.57,
+   "rv10_mean": 0.8547
+  },
+  {
+   "score>=": 80,
+   "vol>=": 60,
+   "episodes": 18,
+   "tickers": 6,
+   "fwd10_mean": 0.029,
+   "share_neg": 0.56,
+   "rv10_mean": 0.8201
+  },
+  {
+   "score>=": 80,
+   "vol>=": 70,
+   "episodes": 18,
+   "tickers": 6,
+   "fwd10_mean": 0.029,
+   "share_neg": 0.56,
+   "rv10_mean": 0.8201
+  },
+  {
+   "score>=": 80,
+   "vol>=": 75,
+   "episodes": 18,
+   "tickers": 6,
+   "fwd10_mean": 0.0012,
+   "share_neg": 0.56,
+   "rv10_mean": 0.8157
+  },
+  {
+   "score>=": 80,
+   "vol>=": 80,
+   "episodes": 15,
+   "tickers": 6,
+   "fwd10_mean": 0.0024,
+   "share_neg": 0.62,
+   "rv10_mean": 0.8187
+  }
+ ],
+ "spikes": {
+  "n": 20,
+  "rv10_after": 0.8395,
+  "rv10_all": 0.706,
+  "abs_ret_spike_day": 0.1381,
+  "abs_ret_all": 0.0357
+ },
+ "monthly": {
+  "same_month": [
+   0.05,
+   365,
+   0.95
+  ],
+  "next_month": [
+   0.028,
+   358,
+   0.53
+  ],
+  "per_ticker_same": {
+   "BROS": -0.178,
+   "FSLY": 0.105,
+   "NOW": 0.145,
+   "NUAI": 0.401,
+   "PLTR": 0.168,
+   "SG": -0.223,
+   "TRMB": 0.021
+  },
+  "per_ticker_next": {
+   "BROS": 0.03,
+   "FSLY": -0.177,
+   "NOW": 0.052,
+   "NUAI": 0.567,
+   "PLTR": -0.151,
+   "SG": -0.076,
+   "TRMB": -0.096
+  },
+  "next_by_band": {
+   "score>=75": [
+    0.0806,
+    38
+   ],
+   "25-74": [
+    0.0208,
+    312
+   ],
+   "score<=24": [
+    0.0432,
+    8
+   ]
+  }
+ },
+ "baseline": {
+  "fwd": {
+   "5": 0.0135,
+   "10": 0.0205,
+   "20": 0.0328
+  },
+  "rv10": 0.706
+ }
+}

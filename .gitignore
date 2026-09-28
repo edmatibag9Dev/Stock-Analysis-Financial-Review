@@ -21,9 +21,12 @@ outputs/
 # passes (e.g. $NUAI) can never be committed by accident.
 /$*/
 # To ADD an approved ticker to the repo, force-add it once — it stays tracked:
-#   git add -f "$TICKER/"
+#   git add -f "$TICKER/" ':(exclude)**/*_sentiment_raw_*.json'
 # (Legacy non-$ folders BROS/PLTR/SG/FSLY/TRMB are already tracked and migrate
 #  to $TICKER on next touch.)
 
 # Local scratch: stale git/Office lock files swept aside for manual deletion
 _to_delete/
+
+# Stocktwits captures stay local even inside force-added ticker folders (skill Phase 1H, decision D4)
+**/$*_sentiment_raw_*.json

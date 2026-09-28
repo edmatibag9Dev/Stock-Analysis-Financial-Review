@@ -30,7 +30,11 @@ This is Ed's own research on public equities. It is not investment advice.
 
 **Two-store model.** Google Drive is the system of record and holds *every* analysis, including one-look passes and AVOIDs, so cross-ticker comparison has full context. This repo is the lean active working set — a ticker is committed only when Ed has an open position, an active options trade, or a live watchlist entry.
 
-**Packaged skill.** `stock-analysis.skill` drives the whole workflow end to end for any ticker: research, model build, memo build, and Drive upload.
+**Packaged skill.** `stock-analysis.skill` drives the whole workflow end to end for any ticker: research, model build, memo build, and Drive upload. Since 2026-09-28 its source lives unpacked in `skill-src/stock-analysis/`, so every change is reviewable as a diff; the `.skill` file is a zip of that folder.
+
+**Social sentiment data layer (Stocktwits).** Each run pulls the ticker's Stocktwits sentiment score, message volume and watchers through the Stocktwits MCP (Model Context Protocol) connector. `skill-src/stock-analysis/scripts/sentiment_features.py` turns one capture file into fixed metrics. The memo gets one "Social sentiment" line closing the Bull Case, one closing the Bear Case (does the crowd share that view?), and a four-row table in Technical Setup; the model gets a Sentiment sheet. It is **one more data layer, not an edge**: it never changes a DCF input, a scenario weight, the rating or an options strike.
+
+**Calibration study behind that rule.** `_Analysis_Patterns/stocktwits-calibration-2026-09/` tested seven tickers (888 ticker-days, 365 ticker-months). Sentiment moved with price on the same day (r = 0.19) and predicted nothing over the next 1–20 sessions, so the layer describes the crowd and never forecasts.
 
 ## 4. File Descriptions
 
@@ -41,9 +45,13 @@ CONTRIBUTING.md            — Commit message and README standards
 CHANGELOG.md               — Keep a Changelog history, newest first (America/Los_Angeles dates)
 llms.txt                   — Machine-readable doc index
 README.md                  — This file
-stock-analysis.skill       — Installable Claude skill automating the full workflow
+stock-analysis.skill       — Installable Claude skill automating the full workflow (zip of skill-src/stock-analysis/)
+skill-src/stock-analysis/  — Unpacked skill source: SKILL.md, references/, workflows/, scripts/sentiment_features.py
+tests/                     — unittest suite for sentiment_features.py + anonymised Stocktwits fixtures ($NUAI, $NOW)
+PLAN-stocktwits-sentiment-2026-Q3.md — Plan, decisions and phase results for the sentiment layer
 .gitignore                 — Excludes Office locks, __pycache__, OS files, and $-ticker folders by default
 _Analysis_Patterns/        — Reusable methodology patterns extracted from completed analyses
+_Analysis_Patterns/stocktwits-calibration-2026-09/ — calibrate.py, FINDINGS.md, results, and the 7-ticker data it ran on
 $BROS/                     — Dutch Bros (active): 2026-06-05 and 2026-08-10 runs + archive
 $FSLY/                     — Fastly (active): 2026-06-08 and 2026-08-11 runs + archive
 $NOW/                      — ServiceNow (active): 2026-06-05 run, 2026-07-23 refresh + archive
@@ -56,8 +64,10 @@ Inside each dated analysis folder:
 
 ```
 $TICKER_Investment_Memo_{date}.docx    — the 11-section memo
-$TICKER_Investment_Model_{date}.xlsx   — the 4-sheet valuation model (where applicable)
+$TICKER_Investment_Model_{date}.xlsx   — the 4-sheet valuation model (where applicable) + Sentiment sheet
 $TICKER_chart.png                      — technical chart (where applicable)
+$TICKER_sentiment_raw_{date}.json      — Stocktwits capture (anonymised; kept local, gitignored)
+$TICKER_sentiment_features_{date}.json — metrics computed from the capture
 build_*.py / create_*.js               — the generators for the above
 ```
 
@@ -89,12 +99,34 @@ Single-quote the paths — an unquoted `$BROS` is read by the shell as an empty 
 **Start a new analysis.** Invoke `stock-analysis.skill` with a ticker. It researches, builds the model and memo into a fresh `$TICKER-{YYYY-MM-DD}/`, and uploads to Drive. Then update the analyses table below, and decide repo-vs-Drive: commit only if the ticker is an active position or watchlist entry. To add an approved ticker past the default `.gitignore` rule, force-add it once — it stays tracked thereafter:
 
 ```bash
-git add -f '$TICKER/'
+git add -f '$TICKER/' ':(exclude)**/*_sentiment_raw_*.json'
 ```
 
 **Expected output:** a memo `.docx` with all 11 sections, a model `.xlsx` with 4 sheets, and — where the analysis includes technicals — a chart `.png`, all inside the dated folder.
 
 No environment variables or API keys are required.
+
+**Run the sentiment tests** (from the repo root; standard library only):
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+**Compute sentiment for a capture file** (Phase 1H of the skill writes the capture from the MCP responses):
+
+```bash
+python3 skill-src/stock-analysis/scripts/sentiment_features.py validate '<capture>.json'
+python3 skill-src/stock-analysis/scripts/sentiment_features.py prices '<capture>.json'
+python3 skill-src/stock-analysis/scripts/sentiment_features.py compute '<capture>.json' -o '<features>.json' --memo
+```
+
+**Repack the skill after editing `skill-src/`**, then re-upload `stock-analysis.skill` in claude.ai (the installed copy does not update itself):
+
+```bash
+cd skill-src && zip -qrX ../stock-analysis.skill stock-analysis -x '*/__pycache__/*' '*.DS_Store'
+```
+
+**Re-run the calibration study** after re-pulling its seven data files: `cd _Analysis_Patterns/stocktwits-calibration-2026-09 && python3 calibrate.py`.
 
 ## 6. Analyses
 
@@ -125,6 +157,9 @@ Newest run per ticker first. DCF values are intrinsic value per share, bull / ba
 - **GuruFocus** (https://www.gurufocus.com), **ValueInvesting.io** (https://valueinvesting.io), **AlphaSpread** (https://www.alphaspread.com) — peer-comp valuation multiples.
 - **investing.com** (https://www.investing.com) and **CNBC** (https://www.cnbc.com) — earnings-day price action and after-hours quotes.
 - **Options chains** — implied volatility and IV rank, read from the brokerage platform at analysis time; strikes and premiums quoted in each memo are point-in-time.
+- **Stocktwits** (https://stocktwits.com) via the Stocktwits MCP connector (read-only) — sentiment score (0–100), message volume (0–100), watchers and recent posts. Reachable only through the connector in a Claude session, not from scripts. The newest daily buckets are provisional and get revised.
+- **Yahoo Finance chart API** (`https://query1.finance.yahoo.com/v8/finance/chart/{TICKER}`) — daily closes for charts, moving averages and the sentiment price overlay.
+- **AlphaQuery** (https://www.alphaquery.com) — 30-day implied-volatility mean when a live chain is not pulled.
 
 All sources are public and free. No credentials, keys, or paid feeds are used, and none are stored in this repo.
 
@@ -138,6 +173,10 @@ All sources are public and free. No credentials, keys, or paid feeds are used, a
 - **Repo is a partial view.** Drive-only tickers such as `$NUAI` are absent by design. The repo is not a complete record of the research.
 - **`.gitignore` fights the naming standard.** `/$*/` ignores every `$`-prefixed ticker folder, so each approved ticker needs a one-time `git add -f`. Forgetting it means a new analysis silently never reaches the repo.
 - **Build scripts require a desktop session.** They will not run from Claude mobile.
+- **Sentiment is not an edge.** The 2026-09 calibration found no predictive value over 1–20 sessions; the sample is small (7 tickers, one 6-month regime), so it neither proves nor rules out an edge. Re-run it around March 2027.
+- **Stocktwits data is revised.** The newest one or two daily buckets change after the fact ($NUAI 2026-09-25 read 74 on Sep 27 and 58 on Sep 28). Every sentiment number carries its pull time.
+- **Captures are hand-written.** Only Claude can call the connector, so it writes the capture file; `validate` catches structure and privacy errors, not a mistyped value.
+- **The installed skill is a separate copy.** Editing `skill-src/` does nothing until the `.skill` is repacked and re-uploaded in claude.ai.
 - **Not investment advice.** Single-analyst research on public equities, with no independent review.
 
 ## 9. Workarounds
@@ -147,8 +186,10 @@ All sources are public and free. No credentials, keys, or paid feeds are used, a
 - *Missing build scripts:* the memos and models remain readable as delivered. Regenerating requires authoring a new script against the current memo structure — treat it as a new analysis, not a repair.
 - *`$NOW` contract break:* fix it on the next `$NOW` run by creating `$NOW/$NOW-{date}/` and moving the July files into `$NOW_Archive/`. Do not retro-move them now — that would rewrite history the memos reference.
 - *Legacy naming:* `SG` and `TRMB` migrate to `$TICKER` on next touch, per AGENTS.md. No bulk rename.
-- *Ignored ticker folders:* `git add -f '$TICKER/'` once per approved ticker; it stays tracked afterward. Verify with `git status --porcelain` before finishing a run.
+- *Ignored ticker folders:* `git add -f '$TICKER/' ':(exclude)**/*_sentiment_raw_*.json'` once per approved ticker (the exclude keeps Stocktwits captures out); it stays tracked afterward. Verify with `git status --porcelain` before finishing a run.
 - *Mobile limitation:* run the build in a desktop session. See CLAUDE.md.
+- *Capture typos:* when a session transcript is available, compare the capture against the raw MCP responses (done for every capture in the 2026-09 build: 0 mismatches). Otherwise spot-check the last bucket against the pulse score, which the script also does.
+- *Pulled during market hours:* `sentiment_features.py` drops the unfinished pull-day price bar before computing price returns.
 
 ## 10. Build Notes
 
@@ -157,9 +198,11 @@ All sources are public and free. No credentials, keys, or paid feeds are used, a
 - **Platform:** developed and tested on macOS (Darwin 25.x). Not validated on Windows or Linux.
 - **Shell safety:** every path containing `$` must be single-quoted in the shell, and build scripts must quote their own output paths. This is the most common source of silent failures — an unquoted `$BROS` expands to nothing and the file writes to the wrong place.
 - **Never overwrite a dated analysis.** A re-run gets a new folder. This is enforced by convention, not by tooling.
+- **Sentiment script:** standard-library Python only (`json`, `urllib`, `zoneinfo`); tests use `unittest`, since `pytest` is not installed on Ed's Mac. The script never calls Stocktwits — it reads one capture file per run (schema `stocktwits-capture/1`, documented in its docstring).
+- **Privacy by schema:** capture files keep only post id, time, ticker count, tag, anonymised author (`a1`…) and likes — no usernames or post text. `validate` rejects anything else.
 - **Staging:** stage named paths only. Never `git add -A`, `git add .`, or `git commit -a` — see the staging rules in AGENTS.md and CONTRIBUTING.md.
 - **Push:** standard `git push`. If sandbox network restrictions block it, use the GitHub Contents API per CONTRIBUTING.md — `GET` the current `sha` before any `PUT` that updates an existing file, or the API returns 409.
 
 ---
 
-*Last updated: 2026-09-04*
+*Last updated: 2026-09-28*
