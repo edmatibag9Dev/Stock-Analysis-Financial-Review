@@ -36,7 +36,7 @@ Legacy non-`$` folders (`BROS`, `PLTR`, `SG`, `FSLY`, `TRMB`) migrate to the sta
 | `README.md` | yes | Human overview, methodology, and the analyses index table (one row per dated run). |
 | `CONTRIBUTING.md` | yes | Canonical commit + README standard. |
 | `CLAUDE.md` | yes | Project instructions / workflow context for agents. |
-| `.gitignore` | yes | Excludes Office lock files, `__pycache__`, OS files, local `outputs/` + logs, `_to_delete/`, all `/$*/` ticker folders by default, and `$TICKER_sentiment_raw_*.json` captures (kept local even for force-added tickers). |
+| `.gitignore` | yes | Excludes Office lock files, `__pycache__`, OS files, local `outputs/` + logs, `_to_delete/`, local `Transcripts/` and `_work/` (paid-subscriber transcripts and their capture scratch — not ours to republish), all `/$*/` ticker folders by default, and `$TICKER_sentiment_raw_*.json` captures (kept local even for force-added tickers). |
 | `CHANGELOG.md` | yes | Keep a Changelog history of the repo (newest first; dates America/Los_Angeles). |
 | `stock-analysis.skill` | yes | The packaged skill that drives an analysis end to end — a zip of `skill-src/stock-analysis/`. Repack after any source edit, then re-upload in claude.ai; the installed copy does not update itself. |
 | `skill-src/stock-analysis/` | yes | Unpacked skill source (since 2026-09-28): `SKILL.md`, `references/`, `workflows/`, `scripts/sentiment_features.py` (Phase 1H Stocktwits metrics). Edit here, not inside the zip. |

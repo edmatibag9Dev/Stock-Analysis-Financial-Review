@@ -30,3 +30,7 @@ _to_delete/
 
 # Stocktwits captures stay local even inside force-added ticker folders (skill Phase 1H, decision D4)
 **/$*_sentiment_raw_*.json
+
+# Paid-subscriber transcripts (e.g. Substack) and their capture scratch stay local — public repo, not ours to republish
+Transcripts/
+_work/

@@ -4,6 +4,11 @@ All notable changes to Stock Analysis Financial Review are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/); dates are America/Los_Angeles.
 Gitignored data/output files are never committed.
 
+## [2026-10-04] — Keep paid transcripts out of the public repo
+
+### Changed
+- `.gitignore` now ignores `Transcripts/` and `_work/`. They held full transcripts of paid-subscriber Substack posts and their capture scratch, which this public repo must not republish. The transcripts stay local; `_work/` was removed.
+
 ## [2026-09-28] — $BROS update with Stocktwits; connector call made mandatory in the skill
 
 ### Added
