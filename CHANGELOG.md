@@ -4,6 +4,19 @@ All notable changes to Stock Analysis Financial Review are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/); dates are America/Los_Angeles.
 Gitignored data/output files are never committed.
 
+## [2026-10-09] — Conform to repo standard 2026-10-09
+
+### Changed
+- **`AGENTS.md`** — added the `Standard: REPO-STANDARD 2026-10-09` stamp on line 2; renamed the
+  gates heading to `## Verification gates`; added a staging gate and a final `repo-check.py` gate;
+  moved the repo-specific "Repo hygiene — git lock files" section after the gates (content
+  unchanged); replaced the pasted "What to Stage — Never Commit Blindly" block (a verbatim copy of
+  `CONTRIBUTING.md`) with a link; `.gitignore` file-map row lists the new entries.
+- **`.gitignore`** — added `.env`, `.env.*`, `!.env.example`, `CONFIG.local.md`, `.venv/`,
+  `node_modules/` and `*.bak*`.
+- **`README.md`** — File Descriptions `.gitignore` line and the Build Notes staging pointer
+  updated to match; `Last updated` set to 2026-10-09.
+
 ## [2026-10-04] — Keep paid transcripts out of the public repo
 
 ### Changed

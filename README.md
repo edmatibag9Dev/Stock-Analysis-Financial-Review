@@ -49,7 +49,7 @@ stock-analysis.skill       — Installable Claude skill automating the full work
 skill-src/stock-analysis/  — Unpacked skill source: SKILL.md, references/, workflows/, scripts/sentiment_features.py
 tests/                     — unittest suite for sentiment_features.py + anonymised Stocktwits fixtures ($NUAI, $NOW)
 PLAN-stocktwits-sentiment-2026-Q3.md — Plan, decisions and phase results for the sentiment layer
-.gitignore                 — Excludes Office locks, __pycache__, OS files, and $-ticker folders by default
+.gitignore                 — Excludes Office locks, __pycache__, OS files, secrets/local config (.env, CONFIG.local.md), backups (*.bak*), .venv/, node_modules/, and $-ticker folders by default
 _Analysis_Patterns/        — Reusable methodology patterns extracted from completed analyses
 _Analysis_Patterns/stocktwits-calibration-2026-09/ — calibrate.py, FINDINGS.md, results, and the 7-ticker data it ran on
 $BROS/                     — Dutch Bros (active): 2026-06-05, 2026-08-10 and 2026-09-28 runs + archive
@@ -202,9 +202,9 @@ All sources are public and free. No credentials, keys, or paid feeds are used, a
 - **Never overwrite a dated analysis.** A re-run gets a new folder. This is enforced by convention, not by tooling.
 - **Sentiment script:** standard-library Python only (`json`, `urllib`, `zoneinfo`); tests use `unittest`, since `pytest` is not installed on Ed's Mac. The script never calls Stocktwits — it reads one capture file per run (schema `stocktwits-capture/1`, documented in its docstring).
 - **Privacy by schema:** capture files keep only post id, time, ticker count, tag, anonymised author (`a1`…) and likes — no usernames or post text. `validate` rejects anything else.
-- **Staging:** stage named paths only. Never `git add -A`, `git add .`, or `git commit -a` — see the staging rules in AGENTS.md and CONTRIBUTING.md.
+- **Staging:** stage named paths only. Never `git add -A`, `git add .`, or `git commit -a` — see the staging rules in CONTRIBUTING.md (linked from the AGENTS.md verification gates).
 - **Push:** standard `git push`. If sandbox network restrictions block it, use the GitHub Contents API per CONTRIBUTING.md — `GET` the current `sha` before any `PUT` that updates an existing file, or the API returns 409.
 
 ---
 
-*Last updated: 2026-09-28*
+*Last updated: 2026-10-09*

@@ -1,4 +1,5 @@
 # AGENTS.md — guide for AI agents working in this repo
+> Standard: REPO-STANDARD 2026-10-09 · Commits, README and staging: CONTRIBUTING.md
 
 This file is the canonical entry point for any AI agent (Claude Code, Cowork, Codex, etc.)
 asked to **use, reference, extend, or rebuild** this project. Read it before acting.
@@ -36,7 +37,7 @@ Legacy non-`$` folders (`BROS`, `PLTR`, `SG`, `FSLY`, `TRMB`) migrate to the sta
 | `README.md` | yes | Human overview, methodology, and the analyses index table (one row per dated run). |
 | `CONTRIBUTING.md` | yes | Canonical commit + README standard. |
 | `CLAUDE.md` | yes | Project instructions / workflow context for agents. |
-| `.gitignore` | yes | Excludes Office lock files, `__pycache__`, OS files, local `outputs/` + logs, `_to_delete/`, local `Transcripts/` and `_work/` (paid-subscriber transcripts and their capture scratch — not ours to republish), all `/$*/` ticker folders by default, and `$TICKER_sentiment_raw_*.json` captures (kept local even for force-added tickers). |
+| `.gitignore` | yes | Excludes Office lock files, `__pycache__`, OS files, secrets and local config (`.env`, `.env.*`, `CONFIG.local.md`), backups (`*.bak*`), `.venv/`, `node_modules/`, local `outputs/` + logs, `_to_delete/`, local `Transcripts/` and `_work/` (paid-subscriber transcripts and their capture scratch — not ours to republish), all `/$*/` ticker folders by default, and `$TICKER_sentiment_raw_*.json` captures (kept local even for force-added tickers). |
 | `CHANGELOG.md` | yes | Keep a Changelog history of the repo (newest first; dates America/Los_Angeles). |
 | `stock-analysis.skill` | yes | The packaged skill that drives an analysis end to end — a zip of `skill-src/stock-analysis/`. Repack after any source edit, then re-upload in claude.ai; the installed copy does not update itself. |
 | `skill-src/stock-analysis/` | yes | Unpacked skill source (since 2026-09-28): `SKILL.md`, `references/`, `workflows/`, `scripts/sentiment_features.py` (Phase 1H Stocktwits metrics). Edit here, not inside the zip. |
@@ -115,6 +116,21 @@ Rules an agent must preserve:
   never any API key. Keep only public-market analysis in the deliverables.
 - If a build script needs a data-provider key, read it from an env var; never hard-code or commit it.
 
+## Verification gates
+
+Run before declaring a change done:
+
+1. The new analysis lives in a correctly named `$TICKER-{YYYY-MM-DD}/` folder (inside `$TICKER/`); no prior folder overwritten.
+2. Memo has all 11 sections (incl. Management & Governance); model has its 4 sheets + Leadership_Scorecard + Sentiment sheet (where a model applies).
+2b. Sentiment layer: a validated capture exists, or the memo carries the scripted `skip` text and the closing summary says "Stocktwits: skipped — {reason}" (never estimated from other sources); capture passes `validate`; Bull Case, Bear Case and Technical Setup numbers match the Sentiment sheet; no sentiment wording in the Summary, Valuation, Options or Verdict (the Sources note may cite Stocktwits); no cell outside the Sentiment sheet references it.
+2c. Skill changes: tests pass, and the repacked `stock-analysis.skill` unzips identical to `skill-src/stock-analysis/`.
+2a. Repo vs Drive: Drive upload done for every run; ticker committed to the repo only if it's an active position/watchlist (else Drive-only).
+3. README analyses table updated (ticker, company, date, rating, DCF bull/base/bear).
+4. No secrets/PII committed (grep the diff for keys/account numbers).
+5. Commit follows `CONTRIBUTING.md`; README updated on feat/data.
+6. Staged named paths only, and `git diff --cached --name-status --diff-filter=D` prints nothing — staging rules: [CONTRIBUTING.md → What to Stage](CONTRIBUTING.md#what-to-stage--never-commit-blindly).
+7. `python3 ~/.claude/skills/repo-standard/scripts/repo-check.py .` reports no FAIL lines.
+
 ## Repo hygiene — git lock files
 
 Zero-byte `HEAD.lock`, `index.lock`, and `objects/maintenance.lock` files accumulate in `.git/`
@@ -133,67 +149,3 @@ Rules:
 - Before deleting, confirm no git process is running (`ps ax | grep -w git`) and that the lock is
   zero-byte and older than the current session. A lock held by a live git process is real.
 - `_to_delete/` is ignored, not tracked. Nothing there belongs in a commit.
-
-## Verification gates (run before declaring a change done)
-1. The new analysis lives in a correctly named `$TICKER-{YYYY-MM-DD}/` folder (inside `$TICKER/`); no prior folder overwritten.
-2. Memo has all 11 sections (incl. Management & Governance); model has its 4 sheets + Leadership_Scorecard + Sentiment sheet (where a model applies).
-2b. Sentiment layer: a validated capture exists, or the memo carries the scripted `skip` text and the closing summary says "Stocktwits: skipped — {reason}" (never estimated from other sources); capture passes `validate`; Bull Case, Bear Case and Technical Setup numbers match the Sentiment sheet; no sentiment wording in the Summary, Valuation, Options or Verdict (the Sources note may cite Stocktwits); no cell outside the Sentiment sheet references it.
-2c. Skill changes: tests pass, and the repacked `stock-analysis.skill` unzips identical to `skill-src/stock-analysis/`.
-2a. Repo vs Drive: Drive upload done for every run; ticker committed to the repo only if it's an active position/watchlist (else Drive-only).
-3. README analyses table updated (ticker, company, date, rating, DCF bull/base/bear).
-4. No secrets/PII committed (grep the diff for keys/account numbers).
-5. Commit follows `CONTRIBUTING.md`; README updated on feat/data.
-
----
-
-## What to Stage — Never Commit Blindly
-
-Staging is part of the commit, not a detail beneath it. A commit records what you
-staged, so an unconditional stage records whatever state the working tree happens
-to be in — including damage you did not cause and did not notice.
-
-### Rules
-
-- **Stage named paths.** `git add <path> <path>` — only the files your change
-  actually touched. You should be able to say why each one is in the commit.
-- **Never `git add -A`, `git add .`, `git add --all`, or `git commit -a`** in a
-  repository that already has history. Use them only to bootstrap a fresh
-  `git init`, and verify the staged list before that first commit.
-- **Check for deletions before every commit:**
-
-  ```
-  git diff --cached --name-status --diff-filter=D
-  ```
-
-  If that prints anything you did not deliberately delete, STOP. Unstage with
-  `git reset`, find out why the file is missing, and restore it. Do not commit
-  the removal.
-- **A file missing from the working tree is not a change.** It is a filesystem,
-  sync-client, or tooling problem. Committing its deletion converts a recoverable
-  accident into recorded history and destroys the git copy that would have
-  restored it.
-- **Untracked is not protected.** A file that was never committed has no git copy
-  at all. If a working file matters, commit it or ignore it deliberately — never
-  leave it untracked by accident.
-
-### Staging self-check
-
-- [ ] Staged named paths only — no `-A`, no `.`, no `-a`
-- [ ] `git diff --cached --name-status --diff-filter=D` shows nothing unintended
-- [ ] Every staged path belongs to the change described in the commit message
-
-### Why this rule exists
-
-On 2026-08-30, commit `3df1d05` in the ai-briefing repo — a routine data commit —
-was staged unconditionally while two files were missing from the working tree. A
-two-way sync client had deleted them nine days earlier. The commit recorded both
-deletions, removing the last recoverable copies from git and leaving the sync
-client's quarantine folder as the only source. They were recovered, but only
-because that quarantine had not yet been purged on its retention timer.
-
-The same pattern nearly caused a data leak once before: an untracked `reports/`
-folder holding local absolute paths and an email address sat in a public repo,
-where any `git add .` would have swept it into a public commit.
-
-Unconditional staging fails in both directions. It commits what should never be
-published, and it deletes what should never be lost.
