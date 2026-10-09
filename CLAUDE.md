@@ -60,7 +60,7 @@ Two-level folder hierarchy: `{TICKER}/` at root contains dated analysis subfolde
 - **Legacy migration (on next touch):** `BROS`, `PLTR`, `SG`, `FSLY`, `TRMB` are renamed to `$TICKER` (folder + subfolders + files) the next time each is analyzed. `$NUAI` and `$NOW` are already on-standard.
 
 **Repo inclusion policy — repo is the lean active working set; Google Drive is the full archive:**
-- **Google Drive = system of record.** EVERY analysis lands in Drive (folder `19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446`), including one-look passes and AVOIDs — so cross-ticker comparisons always have full context.
+- **Google Drive = system of record.** EVERY analysis lands in Drive (folder `<DRIVE_ROOT_FOLDER_ID>`; real ID in the gitignored `CONFIG.local.md`), including one-look passes and AVOIDs — so cross-ticker comparisons always have full context.
 - **Local repo = active tickers only.** A ticker is committed ONLY if Ed has an open equity position, an active options trade, or a live watchlist entry with a planned entry. Everything else is **Drive-only** (e.g. `$NUAI` = AVOID, no position). The test is active engagement, not the rating (`$SG` is AVOID-rated but stays in via active CSPs).
 - The skill asks at the end of each run — repo or Drive-only? — **defaulting to Drive-only**. Enforcement: `.gitignore` ignores all `/$*/` ticker folders; add an approved ticker with `git add -f "$TICKER/" ':(exclude)**/*_sentiment_raw_*.json'` (the exclude keeps Stocktwits captures local).
 
@@ -96,7 +96,7 @@ stock-analysis/
 
 **Phase 3 — Build:** Excel model (4 sheets: Dashboard, Model, Rule_of_40/Unit_Economics + Leadership_Scorecard block, Options_Strategy) + Word memo (11 sections, incl. Section 3 Management & Governance). Color coding: blue = hardcoded inputs, black = formulas, green = cross-sheet links.
 
-**Phase 4 — Reconcile + Present:** Verify all memo DCF numbers match the model before presenting. Upload both files to Google Drive folder `Stock Ticker Analysis` (ID: `19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446`) for mobile access.
+**Phase 4 — Reconcile + Present:** Verify all memo DCF numbers match the model before presenting. Upload both files to Google Drive folder `Stock Ticker Analysis` (ID: `<DRIVE_ROOT_FOLDER_ID>`, see `CONFIG.local.md`) for mobile access.
 
 ---
 
@@ -186,7 +186,7 @@ Dependencies: `npm install -g docx` (install to `/tmp/npm-global`)
 ## Google Drive Sync
 
 All completed analyses are mirrored to Google Drive for mobile access:
-- **Folder:** https://drive.google.com/drive/folders/19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446
+- **Folder:** `https://drive.google.com/drive/folders/<DRIVE_ROOT_FOLDER_ID>` (real ID in the gitignored `CONFIG.local.md`)
 - Files are converted to Google Doc/Sheets format on upload for native mobile viewing.
 - The skill auto-uploads after every new analysis (Phase 4B in SKILL.md).
 

@@ -15,7 +15,7 @@ Design in one line: **one dated folder per analysis (`$TICKER-{YYYY-MM-DD}/` und
 holding the memo, the model, and the build script that generated them.**
 
 **Two stores.** Google Drive is the system of record — EVERY analysis is archived there (folder id
-`19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446`), including one-look passes and AVOIDs, so cross-ticker comparisons
+`<DRIVE_ROOT_FOLDER_ID>`, real value in the gitignored `CONFIG.local.md`), including one-look passes and AVOIDs, so cross-ticker comparisons
 have full context. This git repo is the **lean active working set**: a ticker is committed only if Ed
 has an open position, an active options trade, or a live watchlist entry — everything else is
 Drive-only (e.g. `$NUAI`). The `.gitignore` ignores all `/$*/` ticker folders by default; add an

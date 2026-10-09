@@ -4,6 +4,11 @@ All notable changes to Stock Analysis Financial Review are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/); dates are America/Los_Angeles.
 Gitignored data/output files are never committed.
 
+## [2026-10-09] — Scrub the Drive folder ID from the docs
+
+### Changed
+- `AGENTS.md` and `CLAUDE.md` replace the Google Drive root folder ID with the placeholder `<DRIVE_ROOT_FOLDER_ID>` (public repo; Ed's decision). The real value lives in a gitignored `CONFIG.local.md`.
+
 ## [2026-10-09] — Conform to repo standard 2026-10-09
 
 ### Changed
