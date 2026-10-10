@@ -450,9 +450,14 @@ Drive-only ticker, do NOT write it into the repo — the `.gitignore` `/$*/` gua
 Put the files IN the ticker folder — a folder created without files is a failed run.
 
 **Folder structure:**
-- Root: `Stock Ticker Analysis` (ID: `19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446`)
+- Root: the `Stock Ticker Analysis` folder at the top of Ed's My Drive. Find it by name on every run
+  — never hardcode its ID:
+  `search_files(query: "title = 'Stock Ticker Analysis' and mimeType = 'application/vnd.google-apps.folder' and owner = 'me' and parentId = 'root'")`.
+  Use the result's `id` as `{root ID}` and its `viewUrl` as `{root URL}`. Exactly one result is
+  expected. If the search returns none or more than one, stop and ask Ed which folder to use —
+  never create a new root folder.
 - Create/reuse the **`$TICKER/`** subfolder under the root (literal `$` prefix). Search first:
-  `search_files(query: "title = '$TICKER' and mimeType = 'application/vnd.google-apps.folder' and parentId = '19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446'")`.
+  `search_files(query: "title = '$TICKER' and mimeType = 'application/vnd.google-apps.folder' and parentId = '{root ID}'")`.
   Create it only if the search returns nothing. If a legacy `TICKER` folder (no `$`) exists, ask the
   user to trash it (the Drive connector has no delete/move).
 - File naming: `$TICKER_Investment_Memo_{YYYY-MM-DD}` and `$TICKER_Investment_Model_{YYYY-MM-DD}`.
@@ -497,7 +502,7 @@ small enough to encode in one call.
 
 **Auto-archive rule:** If more than 3 analyses exist for a ticker in Drive, move the oldest to `$TICKER_Archive/`. Keep only the 3 most recent active.
 
-After uploading, share the link: https://drive.google.com/drive/folders/19XzcvJr0sjyUfrUT9f3IrgfXAY0ns446
+After uploading, share the root folder link: `{root URL}` from the root search.
 
 Close with a 2–3 sentence summary: verdict + strongest reason, biggest risk, and confirmation that both the local `$TICKER/` folder and the Drive `$TICKER/` folder are populated. End with the Phase 1H status line — "Stocktwits: called {pulled_at}" or "Stocktwits: skipped — {reason}" — so Ed can see whether the connector ran.
 

@@ -4,6 +4,12 @@ All notable changes to Stock Analysis Financial Review are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/); dates are America/Los_Angeles.
 Gitignored data/output files are never committed.
 
+## [2026-10-10] — Find the Drive root folder by name
+
+### Changed
+- `skill-src/stock-analysis/SKILL.md` §4B finds the `Stock Ticker Analysis` root folder by name (`owner = 'me'`, top level of My Drive) on every run instead of a hardcoded Drive ID, and stops to ask if the search returns zero or several folders. The `$TICKER/` subfolder search and the closing link use the looked-up ID and `viewUrl`.
+- `stock-analysis.skill` repacked from `skill-src/stock-analysis/`; it must be re-uploaded in claude.ai for the installed skill to change.
+
 ## [2026-10-09] — Scrub the Drive folder ID from the docs
 
 ### Changed
