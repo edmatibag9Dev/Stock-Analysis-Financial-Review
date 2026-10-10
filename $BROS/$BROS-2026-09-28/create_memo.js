@@ -261,7 +261,7 @@ const doc = new Document({
   sections: [{
     properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1440, bottom: 1440, left: 1440, right: 1440 } } },
     headers: { default: new Header({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "CONFIDENTIAL — INVESTMENT MEMO  ·  $BROS  ·  Sep 28, 2026", font: BODY, size: 16, color: GREY })] })] }) },
-    footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Page ", font: BODY, size: 16, color: GREY }), new TextRun({ children: [PageNumber.CURRENT], font: BODY, size: 16, color: GREY }), new TextRun({ text: "  ·  Ed Matibag  ·  Not financial advice", font: BODY, size: 16, color: GREY })] })] }) },
+    footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Page ", font: BODY, size: 16, color: GREY }), new TextRun({ children: [PageNumber.CURRENT], font: BODY, size: 16, color: GREY }), new TextRun({ text: "  ·  edmatibag9Dev  ·  Not financial advice", font: BODY, size: 16, color: GREY })] })] }) },
     children,
   }],
 });

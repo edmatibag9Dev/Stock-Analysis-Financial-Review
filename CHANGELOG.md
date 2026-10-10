@@ -4,6 +4,15 @@ All notable changes to Stock Analysis Financial Review are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/); dates are America/Los_Angeles.
 Gitignored data/output files are never committed.
 
+
+## [2026-10-10] — Memo footer names the GitHub handle
+
+### Changed
+- `$BROS/$BROS-2026-09-28/create_memo.js` and the memo it produced
+  (`$BROS_Investment_Memo_2026-09-28.docx`, `word/footer1.xml` only): the footer reads
+  "edmatibag9Dev" instead of the owner's full name. This repo is public, and public repos attribute
+  to the GitHub handle (repo standard §8). The memo was edited in place, not regenerated, so no other
+  content changed. Older memos and the skill template never carried the name.
 ## [2026-10-10] — Find the Drive root folder by name
 
 ### Changed
